@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/bootstrap-table.min.css}" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+<div class="container" th:unless="${#lists.isEmpty(tableList)}">
+
+    <h2 th:text="|数据库名:${dataBaseName}|"></h2>
+
+    <table class="table table-bordered table-hover table-striped" style="width: 1000px;">
+        <thead>
+        <tr>
+            <!--<th>登记目录</th>-->
+            <!--<th>数据库名</th>-->
+            <th>表名</th>
+            <th>存储引擎</th>
+            <th>版本</th>
+            <th>行格式</th>
+            <th>数据量</th>
+            <th>平局长度</th>
+            <th>数据长度</th>
+            <!--<th>最大数据长度</th>-->
+            <!--<th>索引长度</th>-->
+            <!--<th>空间碎片</th>-->
+            <th>自增主键当前值</th>
+            <th>创建时间</th>
+            <th>修改时间</th>
+            <th>检查时间</th>
+            <th>字符校验编码集</th>
+            <!--<th>校验和</th>-->
+            <!--<th>创建选项</th>-->
+            <th>注释</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tb : ${tableList}">
+            <!--<td th:text="${tb.table_catalog}"></td>-->
+            <!--<td th:text="${tb.table_schema}"></td>-->
+            <td th:text="${tb.table_name}"></td>
+            <td th:text="${tb.engine}"></td>
+            <td th:text="${tb.version}"></td>
+            <td th:text="${tb.row_format}"></td>
+            <td th:text="${tb.table_rows}"></td>
+            <td th:text="${tb.avg_row_length}"></td>
+            <td th:text="${tb.data_length}"></td>
+            <!--<td th:text="${tb.max_data_length}"></td>-->
+            <!--<td th:text="${tb.index_length}"></td>-->
+            <!--<td th:text="${tb.data_free}"></td>-->
+            <td th:text="${tb.auto_increment}"></td>
+            <td th:text="${#dates.format(tb.create_time,'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#dates.format(tb.update_time,'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#dates.format(tb.check_time,'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${tb.table_collation}"></td>
+            <!--<td th:text="${tb.checksum}"></td>-->
+            <!--<td th:text="${tb.create_options}"></td>-->
+            <td th:text="${tb.table_comment}"></td>
+            <!--<td th:text="${#strings.arrayJoin(
+                           #messages.arrayMsg(
+                               #strings.arrayPrepend(sb.features,'seedstarter.feature.')),
+                           ', ')}">Electric Heating, Turf</td>
+            <td>
+                <table>
+                    <tbody>
+                    <tr th:each="row,rowStat : ${sb.rows}">
+                        <td th:text="${rowStat.count}">1</td>
+                        <td th:text="${row.variety.name}">Thymus Thymi</td>
+                        <td th:text="${row.seedsPerCell}">12</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>-->
+            <td>
+                <button type="button" th:data-tablename="${tb.table_name}" class="btn btn-primary" onclick="generate(this.getAttribute('data-tablename'))">生成</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript"   th:src="@{/js/jquery.min.js}"></script>
+<script type="text/javascript"   th:src="@{/js/moment.js}"></script>
+<script type="text/javascript"   th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript"   th:src="@{/js/bootstrap-table.min.js}"></script>
+<script type="text/javascript"   th:src="@{/js/bootstrap-table-zh-CN.min.js}"></script>
+<script>
+function generate(tablename) {
+    console.log(tablename);
+}
+</script>
+</body>
+</html>

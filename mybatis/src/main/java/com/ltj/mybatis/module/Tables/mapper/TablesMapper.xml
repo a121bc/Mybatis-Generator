@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ltj.mybatis.module.Tables.mapper.TablesMapper">
+    <resultMap id="BaseResultMap" type="com.ltj.mybatis.module.Tables.po.Tables" >
+        <result column="TABLE_CATALOG" property="table_catalog" jdbcType="VARCHAR" />
+        <result column="TABLE_SCHEMA" property="table_schema" jdbcType="VARCHAR" />
+        <result column="TABLE_NAME" property="table_name" jdbcType="VARCHAR" />
+        <result column="TABLE_TYPE" property="table_type" jdbcType="VARCHAR" />
+        <result column="ENGINE" property="engine" jdbcType="VARCHAR" />
+        <result column="VERSION" property="version" jdbcType="BIGINT" />
+        <result column="ROW_FORMAT" property="row_format" jdbcType="VARCHAR" />
+        <result column="TABLE_ROWS" property="table_rows" jdbcType="BIGINT" />
+        <result column="AVG_ROW_LENGTH" property="avg_row_length" jdbcType="BIGINT" />
+        <result column="DATA_LENGTH" property="data_length" jdbcType="BIGINT" />
+        <result column="MAX_DATA_LENGTH" property="max_data_length" jdbcType="BIGINT" />
+        <result column="INDEX_LENGTH" property="index_length" jdbcType="BIGINT" />
+        <result column="DATA_FREE" property="data_free" jdbcType="BIGINT" />
+        <result column="AUTO_INCREMENT" property="auto_increment" jdbcType="BIGINT" />
+        <result column="CREATE_TIME" property="create_time" jdbcType="TIMESTAMP" />
+        <result column="UPDATE_TIME" property="update_time" jdbcType="TIMESTAMP" />
+        <result column="CHECK_TIME" property="check_time" jdbcType="TIMESTAMP" />
+        <result column="TABLE_COLLATION" property="table_collation" jdbcType="VARCHAR" />
+        <result column="CHECKSUM" property="checksum" jdbcType="BIGINT" />
+        <result column="CREATE_OPTIONS" property="create_options" jdbcType="VARCHAR" />
+        <result column="TABLE_COMMENT" property="table_comment" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!--查询所有表-->
+    <select id="listTable" resultMap="BaseResultMap">
+        select * from information_schema.TABLES where TABLE_SCHEMA=(select database())
+    </select>
+    
+    <select id="selectDataBaseName" resultType="java.lang.String">
+        select database()
+    </select>
+
+</mapper>
