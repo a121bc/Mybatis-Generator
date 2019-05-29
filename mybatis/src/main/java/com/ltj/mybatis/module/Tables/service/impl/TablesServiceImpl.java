@@ -1,13 +1,19 @@
 package com.ltj.mybatis.module.Tables.service.impl;
 
+import com.ltj.mybatis.module.Columns.mapper.ColumnsMapper;
+import com.ltj.mybatis.module.Columns.po.Columns;
+import com.ltj.mybatis.module.Columns.po.ColumnsExtend;
 import com.ltj.mybatis.module.Tables.mapper.TablesMapper;
 import com.ltj.mybatis.module.Tables.po.Tables;
 import com.ltj.mybatis.module.Tables.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -15,6 +21,35 @@ public class TablesServiceImpl implements TablesService {
 
 	@Autowired
 	private TablesMapper tablesMapper;
+	@Autowired
+	private ColumnsMapper columnsMapper;
+
+	private static Map<String,String> javaTypeMap;
+
+	private static Map<String,String> jdbcTypeMap;
+
+	static {
+		javaTypeMap = new HashMap<>();
+		jdbcTypeMap = new HashMap<>();
+
+
+		javaTypeMap.put("int","Integer");
+		javaTypeMap.put("tinyint","byte");
+		javaTypeMap.put("varchar","String");
+		javaTypeMap.put("double","double");
+		javaTypeMap.put("date","Date");
+		javaTypeMap.put("datetime","Date");
+		javaTypeMap.put("timestamp","Date");
+
+		jdbcTypeMap.put("int","INTEGER");
+		jdbcTypeMap.put("tinyint","TINYINT");
+		jdbcTypeMap.put("varchar","VARCHAR");
+		jdbcTypeMap.put("double","DOUBLE");
+		jdbcTypeMap.put("date","TIMESTAMP");
+		jdbcTypeMap.put("datetime","TIMESTAMP");
+		jdbcTypeMap.put("timestamp","TIMESTAMP");
+
+	}
 
 	/**
 	 * @Description 查询所有记录
@@ -38,6 +73,29 @@ public class TablesServiceImpl implements TablesService {
 	@Override
 	public String selectDataBaseName() {
 		return tablesMapper.selectDataBaseName();
+	}
+
+	/**
+	 * @Description 创建实体
+	 * @param tablename
+	 * @return java.util.Map<java.lang.String,java.lang.Object>
+	 * @author 刘天珺
+	 * @Date 14:54 2019-5-29 0029
+	 **/
+	@Override
+	public Map<String, Object> createPo(String tablename) {
+		Map<String,Object> map = new HashMap<>();
+		List<ColumnsExtend> columnsList = columnsMapper.listTableColumn(tablename);
+		for (ColumnsExtend cole : columnsList) {
+			String data_type = cole.getData_type();
+			cole.setJdbcType(jdbcTypeMap.get(data_type));
+			cole.setJavaType(javaTypeMap.get(data_type));
+		}
+		map.put("columnsList",columnsList);
+
+
+
+		return map;
 	}
 
 }

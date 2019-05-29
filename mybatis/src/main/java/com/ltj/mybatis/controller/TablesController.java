@@ -6,6 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/Tables")
@@ -27,5 +30,11 @@ public class TablesController {
 		model.addAttribute("tableList",tablesService.listTable());
 		return "tables";
     }
+
+	@GetMapping("/createPo")
+	@ResponseBody
+	public Map<String,Object> createPo(String tablename, Model model){
+		return tablesService.createPo(tablename);
+	}
 
 }
