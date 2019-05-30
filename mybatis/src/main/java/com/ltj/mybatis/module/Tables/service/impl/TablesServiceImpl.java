@@ -1,7 +1,7 @@
 package com.ltj.mybatis.module.Tables.service.impl;
 
+import com.ltj.mybatis.framework.util.FileManageUtils;
 import com.ltj.mybatis.module.Columns.mapper.ColumnsMapper;
-import com.ltj.mybatis.module.Columns.po.Columns;
 import com.ltj.mybatis.module.Columns.po.ColumnsExtend;
 import com.ltj.mybatis.module.Tables.mapper.TablesMapper;
 import com.ltj.mybatis.module.Tables.po.Tables;
@@ -9,7 +9,6 @@ import com.ltj.mybatis.module.Tables.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,12 +77,13 @@ public class TablesServiceImpl implements TablesService {
 	/**
 	 * @Description 创建实体
 	 * @param tablename
+	 * @param prefix
 	 * @return java.util.Map<java.lang.String,java.lang.Object>
 	 * @author 刘天珺
 	 * @Date 14:54 2019-5-29 0029
 	 **/
 	@Override
-	public Map<String, Object> createPo(String tablename) {
+	public Map<String, Object> createPo(String tablename, String prefix) {
 		Map<String,Object> map = new HashMap<>();
 		List<ColumnsExtend> columnsList = columnsMapper.listTableColumn(tablename);
 		for (ColumnsExtend cole : columnsList) {
@@ -92,9 +92,8 @@ public class TablesServiceImpl implements TablesService {
 			cole.setJavaType(javaTypeMap.get(data_type));
 		}
 		map.put("columnsList",columnsList);
-
-
-
+		String javaPath = FileManageUtils.getJavaPath();
+		FileManageUtils.fillInTemplate("test",map,javaPath+"com.test.test.txt");
 		return map;
 	}
 

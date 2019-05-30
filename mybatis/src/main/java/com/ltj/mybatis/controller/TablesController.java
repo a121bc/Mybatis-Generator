@@ -33,8 +33,8 @@ public class TablesController {
 
 	@GetMapping("/createPo")
 	@ResponseBody
-	public Map<String,Object> createPo(String tablename, Model model){
-		return tablesService.createPo(tablename);
+	public Map<String,Object> createPo(String tablename,String prefix){
+		return tablesService.createPo(tablename,prefix);
 	}
 
 }

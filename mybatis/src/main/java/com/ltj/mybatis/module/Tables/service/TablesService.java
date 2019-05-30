@@ -14,5 +14,5 @@ public interface TablesService {
     String selectDataBaseName();
 
     //创建实体
-    Map<String, Object> createPo(String tablename);
+    Map<String, Object> createPo(String tablename, String prefix);
 }
