@@ -6,12 +6,17 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 描 述 根据模板生成文件
@@ -24,12 +29,11 @@ public class FileManageUtils {
      * @Description 用数据填充模板
      * @param template
      * @param map
-     * @param path
      * @return boolean
      * @author 刘天珺
      * @Date 11:10 2019-5-30 0030
      **/
-    public static String fillInTemplate(String template,Map map,String path) {
+    public static String fillInTemplate(String template,Map map) {
         Locale locale = Locale.getDefault();
         FileTemplateResolver templateResolver = new FileTemplateResolver();
         templateResolver.setTemplateMode(TemplateMode.TEXT);
@@ -50,14 +54,16 @@ public class FileManageUtils {
      * @author 刘天珺
      * @Date 10:57 2019-5-30 0030
      **/
-    public static boolean createFile(String url, String data) {
-        Path path = Paths.get(url);
+    public static boolean createFile(String url,String filename, String data) {
+        Path dirPath = Paths.get(url);
+        Path filePath = Paths.get(url+filename);
         try {
-            if (!Files.exists(path)) {
-                Files.createDirectories(path);
+            if (!Files.exists(dirPath)) {
+                Files.createDirectories(dirPath);
             }
-            Files.createFile(path);
-            BufferedWriter bfw=Files.newBufferedWriter(path);
+            Files.deleteIfExists(filePath);
+            Files.createFile(filePath);
+            BufferedWriter bfw=Files.newBufferedWriter(filePath);
             bfw.write(data);
             bfw.flush();
             bfw.close();
@@ -69,7 +75,7 @@ public class FileManageUtils {
     }
 
     /**
-     * @Description 获取src目录
+     * @Description 获取java目录
      * @param
      * @return java.lang.String
      * @author 刘天珺
@@ -77,11 +83,26 @@ public class FileManageUtils {
      **/
     public static String getJavaPath() {
         String path = FileManageUtils.class.getClass().getResource("/").getPath();
-        String getSrcPath = path.substring(0,path.length()-15)+"src/main/java/";
+        String getSrcPath = path.substring(1,path.length()-15)+"src/main/java/";
         return  getSrcPath;
     }
 
+    //首字母转小写
+    public static String toLowerCaseFirstOne(String s){
+        if(Character.isLowerCase(s.charAt(0)))
+            return s;
+        else
+            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+    }
 
+
+    //首字母转大写
+    public static String toUpperCaseFirstOne(String s){
+        if(Character.isUpperCase(s.charAt(0)))
+            return s;
+        else
+            return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
+    }
 
 
 }

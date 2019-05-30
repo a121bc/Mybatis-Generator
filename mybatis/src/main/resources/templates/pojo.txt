@@ -1,0 +1,18 @@
+package [[${prefix}]].module.[[${utablename}]].po;
+
+import lombok.Data;
+import java.util.Date;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+
+@Data
+public class [[${utablename}]] {
+[#  th:each="col : ${columnsList}"][# th:if="${col.column_key} eq 'PRI'"]
+    @Id
+    @GeneratedValue(generator = "JDBC")
+    private [[${col.javaType}]] [[${col.column_name}]];
+[/][# th:unless="${col.column_key} eq 'PRI'"]
+    /* [[${col.column_comment}]] */
+    private [[${col.javaType}]] [[${col.column_name}]];
+[/][/]
+}

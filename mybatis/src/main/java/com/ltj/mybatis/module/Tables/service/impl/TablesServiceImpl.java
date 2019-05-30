@@ -9,6 +9,7 @@ import com.ltj.mybatis.module.Tables.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -74,16 +75,7 @@ public class TablesServiceImpl implements TablesService {
 		return tablesMapper.selectDataBaseName();
 	}
 
-	/**
-	 * @Description 创建实体
-	 * @param tablename
-	 * @param prefix
-	 * @return java.util.Map<java.lang.String,java.lang.Object>
-	 * @author 刘天珺
-	 * @Date 14:54 2019-5-29 0029
-	 **/
-	@Override
-	public Map<String, Object> createPo(String tablename, String prefix) {
+	public Map<String, Object> createBean(String tablename, String prefix) {
 		Map<String,Object> map = new HashMap<>();
 		List<ColumnsExtend> columnsList = columnsMapper.listTableColumn(tablename);
 		for (ColumnsExtend cole : columnsList) {
@@ -91,10 +83,95 @@ public class TablesServiceImpl implements TablesService {
 			cole.setJdbcType(jdbcTypeMap.get(data_type));
 			cole.setJavaType(javaTypeMap.get(data_type));
 		}
+		String utablename = FileManageUtils.toUpperCaseFirstOne(tablename);
+		map.put("tablename",tablename);
+		map.put("utablename",utablename);
+		map.put("prefix",prefix);
 		map.put("columnsList",columnsList);
 		String javaPath = FileManageUtils.getJavaPath();
-		FileManageUtils.fillInTemplate("test",map,javaPath+"com.test.test.txt");
+
+		createMyMapper(map,javaPath);//创建mymapper.java
+		createPo(map,javaPath);//创建实体
+		createMapper(map,javaPath);//创建mapper.java
+		createMapperXml(map,javaPath);//创建mapper.java
+
+
 		return map;
+	}
+
+	/**
+	 * @Description 创建myMapper
+	 * @param map
+	 * @param javaPath
+	 * @return boolean
+	 * @author 刘天珺
+	 * @Date 16:19 2019-5-30 0030
+	 **/
+	public boolean createMyMapper(Map map,String javaPath) {
+		String data = FileManageUtils.fillInTemplate("myMapper", map);
+		//包名转路径
+		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
+		//实体路径
+		String path = javaPath+pprefix+"/framework/util/";
+
+		//路径拼接
+		return FileManageUtils.createFile(path,"MyMapper.java",data);
+	}
+
+
+	/**
+	 * @Description 创建实体
+	 * @param map
+	 * @param javaPath
+	 * @return java.util.Map<java.lang.String,java.lang.Object>
+	 * @author 刘天珺
+	 * @Date 14:54 2019-5-29 0029
+	 **/
+	public boolean createPo(Map map,String javaPath) {
+		String data = FileManageUtils.fillInTemplate("pojo", map);
+		//包名转路径
+		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
+		//实体路径
+		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/po/";
+		//路径拼接
+		return FileManageUtils.createFile(path,map.get("utablename")+".java",data);
+	}
+
+
+	/**
+	 * @Description 创建mapper文件
+	 * @param map
+	 * @param javaPath
+	 * @return java.util.Map<java.lang.String,java.lang.Object>
+	 * @author 刘天珺
+	 * @Date 15:42 2019-5-30 0030
+	 **/
+	public boolean createMapper(Map map,String javaPath) {
+		String data = FileManageUtils.fillInTemplate("mapperJava", map);
+		//包名转路径
+		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
+		//实体路径
+		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/mapper/";
+		//路径拼接
+		return FileManageUtils.createFile(path,map.get("utablename")+"Mapper.java",data);
+	}
+
+	/**
+	 * @Description 创建xml
+	 * @param map
+	 * @param javaPath
+	 * @return boolean
+	 * @author 刘天珺
+	 * @Date 16:34 2019-5-30 0030
+	 **/
+	public boolean createMapperXml(Map map,String javaPath) {
+		String data = FileManageUtils.fillInTemplate("mypperXml", map);
+		//包名转路径
+		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
+		//实体路径
+		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/mapper/";
+		//路径拼接
+		return FileManageUtils.createFile(path,map.get("utablename")+"Mapper.xml",data);
 	}
 
 }

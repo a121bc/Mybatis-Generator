@@ -34,7 +34,7 @@ public class TablesController {
 	@GetMapping("/createPo")
 	@ResponseBody
 	public Map<String,Object> createPo(String tablename,String prefix){
-		return tablesService.createPo(tablename,prefix);
+		return tablesService.createBean(tablename,prefix);
 	}
 
 }

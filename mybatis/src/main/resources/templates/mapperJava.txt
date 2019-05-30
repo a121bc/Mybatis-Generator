@@ -1,0 +1,10 @@
+package [[${prefix}]].module.[[${utablename}]].mapper;
+
+import [[${prefix}]].module.[[${utablename}]].po.[[${utablename}]];
+import [[${prefix}]].framework.util.MyMapper;
+import org.springframework.stereotype.Component;
+
+@Component
+public interface [[${utablename}]]Mapper extends MyMapper<[[${utablename}]]> {
+
+}
