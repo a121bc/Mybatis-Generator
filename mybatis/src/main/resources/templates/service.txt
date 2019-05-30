@@ -1,0 +1,6 @@
+package [[${prefix}]].module.[[${utablename}]].service;
+
+public interface [[${utablename}]]Service {
+
+
+}

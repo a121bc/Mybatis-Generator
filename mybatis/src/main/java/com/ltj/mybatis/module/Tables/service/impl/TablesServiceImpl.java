@@ -94,6 +94,8 @@ public class TablesServiceImpl implements TablesService {
 		createPo(map,javaPath);//创建实体
 		createMapper(map,javaPath);//创建mapper.java
 		createMapperXml(map,javaPath);//创建mapper.java
+		createService(map,javaPath);//创建mapper.java
+		createServiceImpl(map,javaPath);//创建mapper.java
 
 
 		return map;
@@ -172,6 +174,42 @@ public class TablesServiceImpl implements TablesService {
 		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/mapper/";
 		//路径拼接
 		return FileManageUtils.createFile(path,map.get("utablename")+"Mapper.xml",data);
+	}
+
+	/**
+	 * @Description 创建service接口
+	 * @param map
+	 * @param javaPath
+	 * @return boolean
+	 * @author 刘天珺
+	 * @Date 16:42 2019-5-30 0030
+	 **/
+	public boolean createService(Map map,String javaPath) {
+		String data = FileManageUtils.fillInTemplate("service", map);
+		//包名转路径
+		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
+		//实体路径
+		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/service/";
+		//路径拼接
+		return FileManageUtils.createFile(path,map.get("utablename")+"Service.java",data);
+	}
+
+	/**
+	 * @Description 创建service实现
+	 * @param map
+	 * @param javaPath
+	 * @return boolean
+	 * @author 刘天珺
+	 * @Date 16:42 2019-5-30 0030
+	 **/
+	public boolean createServiceImpl(Map map,String javaPath) {
+		String data = FileManageUtils.fillInTemplate("serviceImpl", map);
+		//包名转路径
+		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
+		//实体路径
+		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/service/impl/";
+		//路径拼接
+		return FileManageUtils.createFile(path,map.get("utablename")+"ServiceImpl.java",data);
 	}
 
 }

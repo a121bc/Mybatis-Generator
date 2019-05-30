@@ -1,0 +1,16 @@
+package [[${prefix}]].module.[[${utablename}]].service.impl;
+import [[${prefix}]].module.[[${utablename}]].mapper.[[${utablename}]]Mapper;
+import [[${prefix}]].module.[[${utablename}]].service.[[${utablename}]]Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
+public class [[${utablename}]]ServiceImpl implements [[${utablename}]]Service {
+
+	@Autowired
+	private [[${utablename}]]Mapper [[${tablename}]]Mapper;
+
+
+}
