@@ -20,7 +20,7 @@
 
 </head>
 <body>
-<div class="container col-md-12" th:unless="${#lists.isEmpty(tableList)}">
+<div class="container col-md-10" th:unless="${#lists.isEmpty(tableList)}">
     <h2 th:text="|数据库名:${dataBaseName}|"></h2>
     <form class="form-inline" role="form">
         <div class="form-group">
@@ -59,9 +59,9 @@
                             <!--<th>登记目录</th>-->
                             <!--<th>数据库名</th>-->
                             <th>表名</th>
-                            <th>存储引擎</th>
-                            <th>版本</th>
-                            <th>行格式</th>
+                            <!--<th>存储引擎</th>-->
+                            <!--<th>版本</th>-->
+                            <!--<th>行格式</th>-->
                             <th>数据量</th>
                             <th>平局长度</th>
                             <th>数据长度</th>
@@ -71,8 +71,8 @@
                             <th>自增主键当前值</th>
                             <th>创建时间</th>
                             <th>修改时间</th>
-                            <th>检查时间</th>
-                            <th>字符校验编码集</th>
+                            <!--<th>检查时间</th>-->
+                            <!--<th>字符校验编码集</th>-->
                             <!--<th>校验和</th>-->
                             <!--<th>创建选项</th>-->
                             <th>注释</th>
@@ -88,9 +88,9 @@
                             <!--<td th:text="${tb.table_catalog}"></td>-->
                             <!--<td th:text="${tb.table_schema}"></td>-->
                             <td th:text="${tb.table_name}"></td>
-                            <td th:text="${tb.engine}"></td>
-                            <td th:text="${tb.version}"></td>
-                            <td th:text="${tb.row_format}"></td>
+                            <!--<td th:text="${tb.engine}"></td>-->
+                            <!--<td th:text="${tb.version}"></td>-->
+                            <!--<td th:text="${tb.row_format}"></td>-->
                             <td th:text="${tb.table_rows}"></td>
                             <td th:text="${tb.avg_row_length}"></td>
                             <td th:text="${tb.data_length}"></td>
@@ -100,26 +100,11 @@
                             <td th:text="${tb.auto_increment}"></td>
                             <td th:text="${#dates.format(tb.create_time,'yyyy-MM-dd HH:mm:ss')}"></td>
                             <td th:text="${#dates.format(tb.update_time,'yyyy-MM-dd HH:mm:ss')}"></td>
-                            <td th:text="${#dates.format(tb.check_time,'yyyy-MM-dd HH:mm:ss')}"></td>
-                            <td th:text="${tb.table_collation}"></td>
+                            <!--<td th:text="${#dates.format(tb.check_time,'yyyy-MM-dd HH:mm:ss')}"></td>-->
+                            <!--<td th:text="${tb.table_collation}"></td>-->
                             <!--<td th:text="${tb.checksum}"></td>-->
                             <!--<td th:text="${tb.create_options}"></td>-->
                             <td th:text="${tb.table_comment}"></td>
-                            <!--<td th:text="${#strings.arrayJoin(
-                                           #messages.arrayMsg(
-                                               #strings.arrayPrepend(sb.features,'seedstarter.feature.')),
-                                           ', ')}">Electric Heating, Turf</td>
-                            <td>
-                                <table>
-                                    <tbody>
-                                    <tr th:each="row,rowStat : ${sb.rows}">
-                                        <td th:text="${rowStat.count}">1</td>
-                                        <td th:text="${row.variety.name}">Thymus Thymi</td>
-                                        <td th:text="${row.seedsPerCell}">12</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </td>-->
                             <td>
                                 <nobr>
                                     <button type="button" th:data-tablename="${tb.table_name}" class="btn btn-primary" onclick="generate(this.getAttribute('data-tablename'),0)">基本生成</button>&nbsp;&nbsp;
@@ -134,6 +119,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <script>
@@ -191,7 +177,7 @@
                 prefix:pre,
                 extend:extend
             },
-            timeout: 5000,          // 设置超时时间
+            timeout: 10000,          // 设置超时时间
             dataType: 'json',
             success: function (data) {
                 if (!data.flag) {
