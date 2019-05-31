@@ -51,7 +51,7 @@ public class TablesController {
 		}
 		Map<String,Object> map = new HashMap<>();
 		boolean flag = true;
-		if(StringUtils.isEmpty(tablenames)){
+		if(StringUtils.isEmpty(tablenames) || prefix.startsWith("com.ltj.mybatis")){
 			flag =false;
 		}else {
 			String[] tableArr = tablenames.split(",");
