@@ -13,5 +13,5 @@ public interface TablesService {
     String selectDataBaseName();
 
     //创建实体
-    Boolean createBean(String tablename, String prefix);
+    Boolean createBean(String tablename, String prefix,Integer extend);
 }

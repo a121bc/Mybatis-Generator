@@ -1,6 +1,17 @@
 package [[${prefix}]].module.[[${utablename}]].service;
-
+[# th:if="${extend} eq 1"]
+import [[${prefix}]].module.[[${utablename}]].po.[[${utablename}]];
+import java.util.Map;
+[/]
 public interface [[${utablename}]]Service {
+[# th:if="${extend} eq 1"]
+    //添加或修改
+	Map<String,Object> insertOrUpdate([[${utablename}]] [[${beanname}]]);
 
+	//根据主键删除
+	Map<String,Object> deleteByFid(Integer fid);
 
+	//查询所有记录
+	Map<String,Object> selectAll();
+[/]
 }

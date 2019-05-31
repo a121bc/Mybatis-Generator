@@ -5,32 +5,45 @@
     <title>Title</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
     <link th:href="@{/css/bootstrap-table.min.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/all.css}" rel="stylesheet" type="text/css" />
     <link th:href="@{/js/layer/theme/default/layer.css}" rel="stylesheet" type="text/css" >
+
     <script type="text/javascript"   th:src="@{/js/jquery.min.js}"></script>
     <script type="text/javascript"   th:src="@{/js/moment.js}"></script>
+    <script type="text/javascript"   th:src="@{/js/popper.min.js}"></script>
     <script type="text/javascript"   th:src="@{/js/bootstrap.min.js}"></script>
     <script type="text/javascript"   th:src="@{/js/bootstrap-table.min.js}"></script>
     <script type="text/javascript"   th:src="@{/js/bootstrap-table-zh-CN.min.js}"></script>
+    <script type="text/javascript"   th:src="@{/js/tableExport.min.js}"></script>
+    <script type="text/javascript"   th:src="@{/js/bootstrap-table-export.min.js}"></script>
     <script type="text/javascript"   th:src="@{/js/layer/layer.js}"></script>
 
 </head>
 <body>
 <div class="container" th:unless="${#lists.isEmpty(tableList)}">
     <h2 th:text="|数据库名:${dataBaseName}|"></h2>
+    <form class="form-inline" role="form">
+        <div class="form-group">
+            <label for="prefix">包名:</label>&nbsp;&nbsp;
+            <input type="text" class="form-control" id="prefix" name="prefix" placeholder="例如:com.slk.capital">
+        </div>&nbsp;&nbsp;
+        <div class="form-group">
+            <button type="button" class="btn btn-success" onclick="genSelectTables(0)">基本生成</button>
+        </div>&nbsp;&nbsp;
+        <div class="form-group">
+            <button type="button" class="btn btn-info" onclick="genSelectTables(1)">加强生成</button>
+        </div>&nbsp;&nbsp;
+    </form>
     <div class="row">
-        <form class="form-inline" role="form">
-            <div class="form-group">
-                <label for="prefix">包名:</label>&nbsp;&nbsp;
-                <input type="text" class="form-control" id="prefix" name="prefix" placeholder="例如:com.slk.capital">
-            </div>&nbsp;&nbsp;
-            <div class="form-group">
-                <button type="button" class="btn btn-success" onclick="genSelectTables()">生成勾选</button>
-            </div>&nbsp;&nbsp;
-        </form>
 
         <table id="table"
                data-toggle="table"
                data-search="true"
+               data-show-refresh="true"
+               data-show-toggle="true"
+               data-show-fullscreen="true"
+               data-show-columns="true"
+               data-show-export="true"
                data-minimum-count-columns="2"
                data-pagination="true"
                data-page-list="[10, 25, 50, 100, ALL]"
@@ -38,7 +51,7 @@
             <thead>
             <tr>
                 <th>
-                    <div class="th-inner "><label><input name="btSelectAll" type="checkbox"><span></span></label></div>
+                    <div class="th-inner "><label><input name="btSelectAll" type="checkbox" class="check-box"><span></span></label></div>
                 </th>
                 <!--<th>登记目录</th>-->
                 <!--<th>数据库名</th>-->
@@ -105,7 +118,10 @@
                     </table>
                 </td>-->
                 <td>
-                    <button type="button" th:data-tablename="${tb.table_name}" class="btn btn-primary" onclick="generate(this.getAttribute('data-tablename'))">生成</button>
+                    <nobr>
+                        <button type="button" th:data-tablename="${tb.table_name}" class="btn btn-primary" onclick="generate(this.getAttribute('data-tablename'),0)">基本生成</button>&nbsp;&nbsp;
+                        <button type="button" th:data-tablename="${tb.table_name}" class="btn btn-info" onclick="generate(this.getAttribute('data-tablename'),1)">加强生成</button>&nbsp;&nbsp;
+                    </nobr>
                 </td>
             </tr>
             </tbody>
@@ -118,27 +134,33 @@
     const $table = $('#table');
     const $prefix = $('#prefix');
 
-    //返回选择项
     function getIdSelections() {
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.id;
+        })
+    }
+
+    //返回选择项
+    function getNameSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
             return row[1];
         })
     }
 
     //生成单个
-    function generate(tablename) {
+    function generate(tablename,extend) {
         let pre =$prefix.val();
         if($.trim(pre)==""){
             $prefix.focus();
             layer.msg('请输入包名',function () {});
             return ;
         }
-        ajaxGen(pre,tablename);
+        ajaxGen(pre,tablename,extend);
     }
 
     //生成一组
-    function genSelectTables() {
-        let arr = getIdSelections();
+    function genSelectTables(extend) {
+        let arr = getNameSelections();
         let pre =$prefix.val();
         if($.trim(pre)==""){
             $prefix.focus();
@@ -149,17 +171,18 @@
             layer.msg('请输勾选复选框',function () {});
             return ;
         }
-        ajaxGen(pre,arr.join(","));
+        ajaxGen(pre,arr.join(","),extend);
 
     }
 
-    function ajaxGen(pre,tablenames) {
+    function ajaxGen(pre,tablenames,extend) {
         $.ajax({
             url: "createBeans",
             type: "POST",
             data: {
                 tablenames:tablenames,
-                prefix:pre
+                prefix:pre,
+                extend:extend
             },
             timeout: 5000,          // 设置超时时间
             dataType: 'json',

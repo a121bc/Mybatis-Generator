@@ -91,6 +91,7 @@
                     <include>**/*.log</include>
                     <include>**/*.png</include>
                     <include>**/*.gif</include>
+                    <include>**/*.woff*</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>

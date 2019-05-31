@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/Tables")
@@ -44,7 +45,10 @@ public class TablesController {
      **/
 	@PostMapping("/createBeans")
 	@ResponseBody
-	public Map<String,Object> createBeans(String tablenames,String prefix){
+	public Map<String,Object> createBeans(String tablenames,String prefix,Integer extend){
+		if(Objects.isNull(extend)) {
+			extend = 0;
+		}
 		Map<String,Object> map = new HashMap<>();
 		boolean flag = true;
 		if(StringUtils.isEmpty(tablenames)){
@@ -53,7 +57,7 @@ public class TablesController {
 			String[] tableArr = tablenames.split(",");
 			for (String ta: tableArr) {
 				if(flag){
-					flag = tablesService.createBean(ta,prefix);
+					flag = tablesService.createBean(ta,prefix,extend);
 				}
 			}
 		}

@@ -84,7 +84,7 @@ public class TablesServiceImpl implements TablesService {
 	 * @author 刘天珺
 	 * @Date 11:22 2019-5-31 0031
 	 **/
-	public Boolean createBean(String tablename, String prefix) {
+	public Boolean createBean(String tablename, String prefix, Integer extend) {
 		Map<String,Object> map = new HashMap<>();
 		List<ColumnsExtend> columnsList = columnsMapper.listTableColumn(tablename);
 		for (ColumnsExtend cole : columnsList) {
@@ -92,11 +92,18 @@ public class TablesServiceImpl implements TablesService {
 			cole.setJdbcType(jdbcTypeMap.get(data_type));
 			cole.setJavaType(javaTypeMap.get(data_type));
 		}
-		tablename = FileManageUtils.lineToHump(tablename);
-		String utablename = FileManageUtils.toUpperCaseFirstOne(tablename);
+		String tablehump = FileManageUtils.lineToHump(tablename);
+		String utablename = FileManageUtils.toUpperCaseFirstOne(tablehump);
+		String beanbefor = tablename.substring(tablename.indexOf("_")+1);
+		String beanname = FileManageUtils.lineToHump(beanbefor);
+		String ubeanname = FileManageUtils.toUpperCaseFirstOne(beanname);
+
 		map.put("tablename",tablename);
 		map.put("utablename",utablename);
+		map.put("beanname",beanname);
+		map.put("ubeanname",ubeanname);
 		map.put("prefix",prefix);
+		map.put("extend",extend);
 		map.put("columnsList",columnsList);
 		//创建文件
 		return createAll(map);
@@ -110,8 +117,11 @@ public class TablesServiceImpl implements TablesService {
 	 * @Date 09:25 2019-5-31 0031
 	 **/
 	public boolean createAll(Map map) {
+		Integer extend = (Integer) map.get("extend");
+
 		String javaPath = FileManageUtils.getJavaPath();
 		String utablename = (String) map.get("utablename");
+		String ubeanname = (String) map.get("ubeanname");
 		String prefix = (String) map.get("prefix");
 		String path = javaPath + StringUtils.replace(prefix,".","/");
 
@@ -144,6 +154,12 @@ public class TablesServiceImpl implements TablesService {
 			String serviceImplData = FileManageUtils.fillInTemplate("serviceImpl", map);
 			FileManageUtils.createFile(serviceImplPath,utablename+"ServiceImpl.java",serviceImplData);
 
+			if(extend == 1){
+				//创建controller
+				String controllerPath = path +"/controller/";
+				String controllerData = FileManageUtils.fillInTemplate("controller", map);
+				FileManageUtils.createFile(controllerPath,ubeanname+"Controller.java",controllerData);
+			}
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
