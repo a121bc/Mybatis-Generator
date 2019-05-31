@@ -89,6 +89,8 @@
                     <include>**/*.js</include>
                     <include>**/*.css</include>
                     <include>**/*.log</include>
+                    <include>**/*.png</include>
+                    <include>**/*.gif</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>

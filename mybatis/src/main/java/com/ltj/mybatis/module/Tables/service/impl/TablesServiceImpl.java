@@ -76,7 +76,15 @@ public class TablesServiceImpl implements TablesService {
 		return tablesMapper.selectDataBaseName();
 	}
 
-	public Map<String, Object> createBean(String tablename, String prefix) {
+	/**
+	 * @Description 查询表数据并创建Bean
+	 * @param tablename
+	 * @param prefix
+	 * @return java.util.Map<java.lang.String,java.lang.Object>
+	 * @author 刘天珺
+	 * @Date 11:22 2019-5-31 0031
+	 **/
+	public Boolean createBean(String tablename, String prefix) {
 		Map<String,Object> map = new HashMap<>();
 		List<ColumnsExtend> columnsList = columnsMapper.listTableColumn(tablename);
 		for (ColumnsExtend cole : columnsList) {
@@ -90,9 +98,8 @@ public class TablesServiceImpl implements TablesService {
 		map.put("utablename",utablename);
 		map.put("prefix",prefix);
 		map.put("columnsList",columnsList);
-
-		createAll(map);
-		return map;
+		//创建文件
+		return createAll(map);
 	}
 
 	/**
