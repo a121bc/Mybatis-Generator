@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,7 @@ public class TablesServiceImpl implements TablesService {
 	static {
 		javaTypeMap = new HashMap<>();
 		jdbcTypeMap = new HashMap<>();
-
-
+		//java类型
 		javaTypeMap.put("int","Integer");
 		javaTypeMap.put("tinyint","byte");
 		javaTypeMap.put("varchar","String");
@@ -41,6 +41,7 @@ public class TablesServiceImpl implements TablesService {
 		javaTypeMap.put("datetime","Date");
 		javaTypeMap.put("timestamp","Date");
 
+		//jdbc类型
 		jdbcTypeMap.put("int","INTEGER");
 		jdbcTypeMap.put("tinyint","TINYINT");
 		jdbcTypeMap.put("varchar","VARCHAR");
@@ -83,133 +84,67 @@ public class TablesServiceImpl implements TablesService {
 			cole.setJdbcType(jdbcTypeMap.get(data_type));
 			cole.setJavaType(javaTypeMap.get(data_type));
 		}
+		tablename = FileManageUtils.lineToHump(tablename);
 		String utablename = FileManageUtils.toUpperCaseFirstOne(tablename);
 		map.put("tablename",tablename);
 		map.put("utablename",utablename);
 		map.put("prefix",prefix);
 		map.put("columnsList",columnsList);
-		String javaPath = FileManageUtils.getJavaPath();
 
-		createMyMapper(map,javaPath);//创建mymapper.java
-		createPo(map,javaPath);//创建实体
-		createMapper(map,javaPath);//创建mapper.java
-		createMapperXml(map,javaPath);//创建mapper.java
-		createService(map,javaPath);//创建mapper.java
-		createServiceImpl(map,javaPath);//创建mapper.java
-
-
+		createAll(map);
 		return map;
 	}
 
 	/**
-	 * @Description 创建myMapper
+	 * @Description 根据数据创建文件
 	 * @param map
-	 * @param javaPath
 	 * @return boolean
 	 * @author 刘天珺
-	 * @Date 16:19 2019-5-30 0030
+	 * @Date 09:25 2019-5-31 0031
 	 **/
-	public boolean createMyMapper(Map map,String javaPath) {
-		String data = FileManageUtils.fillInTemplate("myMapper", map);
-		//包名转路径
-		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
-		//实体路径
-		String path = javaPath+pprefix+"/framework/util/";
+	public boolean createAll(Map map) {
+		String javaPath = FileManageUtils.getJavaPath();
+		String utablename = (String) map.get("utablename");
+		String prefix = (String) map.get("prefix");
+		String path = javaPath + StringUtils.replace(prefix,".","/");
 
-		//路径拼接
-		return FileManageUtils.createFile(path,"MyMapper.java",data);
+		try {
+			//创建myMapper
+			String myMapperPath = path+"/framework/util/";
+			String myMapperData = FileManageUtils.fillInTemplate("myMapper", map);
+			FileManageUtils.createFile(myMapperPath,"MyMapper.java",myMapperData);
+
+			//包路径
+			String packPath = path+"/module/"+ utablename;
+
+			//创建实体
+			String poPath = packPath +"/po/";
+			String pojoData = FileManageUtils.fillInTemplate("pojo", map);
+			FileManageUtils.createFile(poPath,utablename+".java",pojoData);
+			//创建mapper.java文件
+			String mapperpath = packPath +"/mapper/";
+			String mapperJavaData = FileManageUtils.fillInTemplate("mapperJava", map);
+			FileManageUtils.createFile(mapperpath,utablename+"Mapper.java",mapperJavaData);
+			//创建mapper.xml文件
+			String mapperXmlData = FileManageUtils.fillInTemplate("mypperXml", map);
+			FileManageUtils.createFile(mapperpath,utablename+"Mapper.xml",mapperXmlData);
+			//创建service.java文件
+			String servicePath = packPath +"/service/";
+			String serviceData = FileManageUtils.fillInTemplate("service", map);
+			FileManageUtils.createFile(servicePath,utablename+"Service.java",serviceData);
+			//创建serviceImpl.java文件
+			String serviceImplPath = servicePath+"/impl/";
+			String serviceImplData = FileManageUtils.fillInTemplate("serviceImpl", map);
+			FileManageUtils.createFile(serviceImplPath,utablename+"ServiceImpl.java",serviceImplData);
+
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+
 	}
 
-
-	/**
-	 * @Description 创建实体
-	 * @param map
-	 * @param javaPath
-	 * @return java.util.Map<java.lang.String,java.lang.Object>
-	 * @author 刘天珺
-	 * @Date 14:54 2019-5-29 0029
-	 **/
-	public boolean createPo(Map map,String javaPath) {
-		String data = FileManageUtils.fillInTemplate("pojo", map);
-		//包名转路径
-		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
-		//实体路径
-		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/po/";
-		//路径拼接
-		return FileManageUtils.createFile(path,map.get("utablename")+".java",data);
-	}
-
-
-	/**
-	 * @Description 创建mapper文件
-	 * @param map
-	 * @param javaPath
-	 * @return java.util.Map<java.lang.String,java.lang.Object>
-	 * @author 刘天珺
-	 * @Date 15:42 2019-5-30 0030
-	 **/
-	public boolean createMapper(Map map,String javaPath) {
-		String data = FileManageUtils.fillInTemplate("mapperJava", map);
-		//包名转路径
-		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
-		//实体路径
-		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/mapper/";
-		//路径拼接
-		return FileManageUtils.createFile(path,map.get("utablename")+"Mapper.java",data);
-	}
-
-	/**
-	 * @Description 创建xml
-	 * @param map
-	 * @param javaPath
-	 * @return boolean
-	 * @author 刘天珺
-	 * @Date 16:34 2019-5-30 0030
-	 **/
-	public boolean createMapperXml(Map map,String javaPath) {
-		String data = FileManageUtils.fillInTemplate("mypperXml", map);
-		//包名转路径
-		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
-		//实体路径
-		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/mapper/";
-		//路径拼接
-		return FileManageUtils.createFile(path,map.get("utablename")+"Mapper.xml",data);
-	}
-
-	/**
-	 * @Description 创建service接口
-	 * @param map
-	 * @param javaPath
-	 * @return boolean
-	 * @author 刘天珺
-	 * @Date 16:42 2019-5-30 0030
-	 **/
-	public boolean createService(Map map,String javaPath) {
-		String data = FileManageUtils.fillInTemplate("service", map);
-		//包名转路径
-		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
-		//实体路径
-		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/service/";
-		//路径拼接
-		return FileManageUtils.createFile(path,map.get("utablename")+"Service.java",data);
-	}
-
-	/**
-	 * @Description 创建service实现
-	 * @param map
-	 * @param javaPath
-	 * @return boolean
-	 * @author 刘天珺
-	 * @Date 16:42 2019-5-30 0030
-	 **/
-	public boolean createServiceImpl(Map map,String javaPath) {
-		String data = FileManageUtils.fillInTemplate("serviceImpl", map);
-		//包名转路径
-		String pprefix = StringUtils.replace((String)map.get("prefix"),".","/");
-		//实体路径
-		String path = javaPath+pprefix+"/module/"+ map.get("utablename") +"/service/impl/";
-		//路径拼接
-		return FileManageUtils.createFile(path,map.get("utablename")+"ServiceImpl.java",data);
-	}
 
 }

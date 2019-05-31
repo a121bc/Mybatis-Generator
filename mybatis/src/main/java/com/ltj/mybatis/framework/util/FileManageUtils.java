@@ -6,17 +6,14 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 描 述 根据模板生成文件
@@ -38,7 +35,7 @@ public class FileManageUtils {
         FileTemplateResolver templateResolver = new FileTemplateResolver();
         templateResolver.setTemplateMode(TemplateMode.TEXT);
         templateResolver.setPrefix("mybatis/src/main/resources/templates/");
-        templateResolver.setSuffix(".txt");
+        templateResolver.setSuffix(".tmp");
         templateResolver.setCacheTTLMs(3600000L);
         templateResolver.setCharacterEncoding("utf-8");
         TemplateEngine templateEngine = new TemplateEngine();
@@ -54,24 +51,19 @@ public class FileManageUtils {
      * @author 刘天珺
      * @Date 10:57 2019-5-30 0030
      **/
-    public static boolean createFile(String url,String filename, String data) {
+    public static boolean createFile(String url,String filename, String data) throws IOException {
         Path dirPath = Paths.get(url);
         Path filePath = Paths.get(url+filename);
-        try {
-            if (!Files.exists(dirPath)) {
-                Files.createDirectories(dirPath);
-            }
-            Files.deleteIfExists(filePath);
-            Files.createFile(filePath);
-            BufferedWriter bfw=Files.newBufferedWriter(filePath);
-            bfw.write(data);
-            bfw.flush();
-            bfw.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        if (!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
         }
+        Files.deleteIfExists(filePath);
+        Files.createFile(filePath);
+        BufferedWriter bfw=Files.newBufferedWriter(filePath);
+        bfw.write(data);
+        bfw.flush();
+        bfw.close();
+        return true;
     }
 
     /**
@@ -102,6 +94,17 @@ public class FileManageUtils {
             return s;
         else
             return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
+    }
+
+    /**下划线转驼峰*/
+    public static String lineToHump(String str){
+        Matcher matcher = Pattern.compile("_(\\w)").matcher(str.toLowerCase());
+        StringBuffer sb = new StringBuffer();
+        while(matcher.find()){
+            matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 
 
