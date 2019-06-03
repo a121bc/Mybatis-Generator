@@ -169,6 +169,7 @@
     }
 
     function ajaxGen(pre,tablenames,extend) {
+        let index;
         $.ajax({
             url: "createBeans",
             type: "POST",
@@ -176,6 +177,9 @@
                 tablenames:tablenames,
                 prefix:pre,
                 extend:extend
+            },
+            beforeSend: function (xhr) {
+                index = layer.load(1, {shade: 0.5});    // 数据加载成功之前，使用loading组件
             },
             timeout: 10000,          // 设置超时时间
             dataType: 'json',
@@ -189,7 +193,15 @@
             },
             error: function (textStatus) {
                 layer.msg("请求连接被拒绝！", {icon: 2});
+                layer.close(index);
             },
+            complete: function (xhr) {
+                if(status == 'timeout') {
+                    xhr.abort();    // 超时后中断请求
+                    layer.msg("请求超时！",{icon:2});
+                }
+                layer.close(index);
+            }
         });
     }
 </script>
