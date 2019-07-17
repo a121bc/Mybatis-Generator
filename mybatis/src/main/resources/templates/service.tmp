@@ -1,6 +1,6 @@
-package [[${prefix}]].module.[[${utablename}]].service;
+package [[${prefix}]].module.[[${ptablename}]].service;
 [# th:if="${extend} eq 1"]
-import [[${prefix}]].module.[[${utablename}]].po.[[${utablename}]];
+import [[${prefix}]].module.[[${ptablename}]].po.[[${utablename}]];
 import java.util.Map;
 [/]
 public interface [[${utablename}]]Service {

@@ -75,7 +75,7 @@ public class FileManageUtils {
      **/
     public static String getJavaPath() {
         String path = FileManageUtils.class.getClass().getResource("/").getPath();
-        String getSrcPath = path.substring(1,path.length()-15)+"src/main/java/";
+        String getSrcPath = path.substring(1,path.indexOf("mybatis")+8)+"src/main/java/";
         return  getSrcPath;
     }
 
@@ -102,6 +102,17 @@ public class FileManageUtils {
         StringBuffer sb = new StringBuffer();
         while(matcher.find()){
             matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
+
+    // 前缀大写和下划线转驼峰
+    public static String HeadAndlineToHump(String str){
+        Matcher matcher = Pattern.compile("_(\\w)|^([A-Za-z]+)").matcher(str.toLowerCase());
+        StringBuffer sb = new StringBuffer();
+        while(matcher.find()){
+            matcher.appendReplacement(sb, matcher.group(0).toUpperCase());
         }
         matcher.appendTail(sb);
         return sb.toString();

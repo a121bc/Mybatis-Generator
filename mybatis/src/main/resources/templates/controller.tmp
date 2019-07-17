@@ -3,8 +3,8 @@ package [[${prefix}]].controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import [[${prefix}]].module.[[${utablename}]].po.[[${utablename}]];
-import [[${prefix}]].module.[[${utablename}]].service.[[${utablename}]]Service;
+import [[${prefix}]].module.[[${ptablename}]].po.[[${utablename}]];
+import [[${prefix}]].module.[[${ptablename}]].service.[[${utablename}]]Service;
 import java.util.Map;
 
 @RestController

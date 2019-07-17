@@ -1,4 +1,4 @@
-package [[${prefix}]].module.[[${utablename}]].po;
+package [[${prefix}]].module.[[${ptablename}]].po;
 
 import lombok.Data;
 import java.util.Date;

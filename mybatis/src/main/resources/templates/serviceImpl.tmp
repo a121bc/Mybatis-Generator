@@ -1,11 +1,12 @@
-package [[${prefix}]].module.[[${utablename}]].service.impl;
-import [[${prefix}]].module.[[${utablename}]].mapper.[[${utablename}]]Mapper;
-import [[${prefix}]].module.[[${utablename}]].service.[[${utablename}]]Service;
+package [[${prefix}]].module.[[${ptablename}]].service.impl;
+
+import [[${prefix}]].module.[[${ptablename}]].mapper.[[${utablename}]]Mapper;
+import [[${prefix}]].module.[[${ptablename}]].service.[[${utablename}]]Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 [# th:if="${extend} eq 1"]
-import [[${prefix}]].module.[[${utablename}]].po.[[${utablename}]];
+import [[${prefix}]].module.[[${ptablename}]].po.[[${utablename}]];
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;

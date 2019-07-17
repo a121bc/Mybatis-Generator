@@ -94,12 +94,14 @@ public class TablesServiceImpl implements TablesService {
 		}
 		String tablehump = FileManageUtils.lineToHump(tablename);
 		String utablename = FileManageUtils.toUpperCaseFirstOne(tablehump);
+		String ptablename = FileManageUtils.HeadAndlineToHump(tablename);
 		String beanbefor = tablename.substring(tablename.indexOf("_")+1);
 		String beanname = FileManageUtils.lineToHump(beanbefor);
 		String ubeanname = FileManageUtils.toUpperCaseFirstOne(beanname);
 
 		map.put("tablename",tablename);
 		map.put("utablename",utablename);
+		map.put("ptablename",ptablename);
 		map.put("beanname",beanname);
 		map.put("ubeanname",ubeanname);
 		map.put("prefix",prefix);
@@ -121,6 +123,7 @@ public class TablesServiceImpl implements TablesService {
 
 		String javaPath = FileManageUtils.getJavaPath();
 		String utablename = (String) map.get("utablename");
+		String ptablename = (String) map.get("ptablename");
 		String ubeanname = (String) map.get("ubeanname");
 		String prefix = (String) map.get("prefix");
 		String path = javaPath + StringUtils.replace(prefix,".","/");
@@ -132,7 +135,7 @@ public class TablesServiceImpl implements TablesService {
 			FileManageUtils.createFile(myMapperPath,"MyMapper.java",myMapperData);
 
 			//包路径
-			String packPath = path+"/module/"+ utablename;
+			String packPath = path+"/module/"+ ptablename;
 
 			//创建实体
 			String poPath = packPath +"/po/";

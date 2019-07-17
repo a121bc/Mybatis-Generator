@@ -1,6 +1,6 @@
-package [[${prefix}]].module.[[${utablename}]].mapper;
+package [[${prefix}]].module.[[${ptablename}]].mapper;
 
-import [[${prefix}]].module.[[${utablename}]].po.[[${utablename}]];
+import [[${prefix}]].module.[[${ptablename}]].po.[[${utablename}]];
 import [[${prefix}]].framework.util.MyMapper;
 import org.springframework.stereotype.Component;
 
