@@ -36,7 +36,7 @@ public class TablesServiceImpl implements TablesService {
 		javaTypeMap.put("int","Integer");
 		javaTypeMap.put("tinyint","byte");
 		javaTypeMap.put("varchar","String");
-		javaTypeMap.put("double","double");
+		javaTypeMap.put("double","Double");
 		javaTypeMap.put("date","Date");
 		javaTypeMap.put("datetime","Date");
 		javaTypeMap.put("timestamp","Date");
@@ -84,6 +84,7 @@ public class TablesServiceImpl implements TablesService {
 	 * @author 刘天珺
 	 * @Date 11:22 2019-5-31 0031
 	 **/
+	@Override
 	public Boolean createBean(String tablename, String prefix, Integer extend) {
 		Map<String,Object> map = new HashMap<>();
 		List<ColumnsExtend> columnsList = columnsMapper.listTableColumn(tablename);
