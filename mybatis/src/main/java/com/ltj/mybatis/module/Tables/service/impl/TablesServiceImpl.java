@@ -40,6 +40,7 @@ public class TablesServiceImpl implements TablesService {
 		javaTypeMap.put("date","Date");
 		javaTypeMap.put("datetime","Date");
 		javaTypeMap.put("timestamp","Date");
+		javaTypeMap.put("text","String");
 
 		//jdbc类型
 		jdbcTypeMap.put("int","INTEGER");
@@ -49,6 +50,7 @@ public class TablesServiceImpl implements TablesService {
 		jdbcTypeMap.put("date","TIMESTAMP");
 		jdbcTypeMap.put("datetime","TIMESTAMP");
 		jdbcTypeMap.put("timestamp","TIMESTAMP");
+		jdbcTypeMap.put("text","LONGVARCHAR");
 
 	}
 
