@@ -90,10 +90,17 @@ public class TablesServiceImpl implements TablesService {
 	public Boolean createBean(String tablename, String prefix, Integer extend) {
 		Map<String,Object> map = new HashMap<>();
 		List<ColumnsExtend> columnsList = columnsMapper.listTableColumn(tablename);
+		String priCol = "Fid";
 		for (ColumnsExtend cole : columnsList) {
 			String data_type = cole.getData_type();
-			cole.setJdbcType(jdbcTypeMap.get(data_type));
-			cole.setJavaType(javaTypeMap.get(data_type));
+			String jdbctype = jdbcTypeMap.get(data_type);
+			String javaType = javaTypeMap.get(data_type);
+			cole.setJdbcType(jdbctype==null?"VARCHAR":jdbctype);
+			cole.setJavaType(javaType==null?"String":javaType);
+			if ("PRI".equals(cole.getColumn_key())) {
+				priCol = FileManageUtils.toUpperCaseFirstOne(cole.getColumn_name());
+			}
+
 		}
 		String tablehump = FileManageUtils.lineToHump(tablename);
 		String utablename = FileManageUtils.toUpperCaseFirstOne(tablehump);
@@ -110,6 +117,7 @@ public class TablesServiceImpl implements TablesService {
 		map.put("prefix",prefix);
 		map.put("extend",extend);
 		map.put("columnsList",columnsList);
+		map.put("priCol",priCol);
 		//创建文件
 		return createAll(map);
 	}
