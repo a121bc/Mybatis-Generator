@@ -1,5 +1,0 @@
-你好
-[#  th:each="col : ${columnsList}"]
-    [[${col.column_name}]]
-
-[/]

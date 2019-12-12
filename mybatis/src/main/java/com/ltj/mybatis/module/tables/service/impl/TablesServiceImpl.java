@@ -1,11 +1,11 @@
-package com.ltj.mybatis.module.Tables.service.impl;
+package com.ltj.mybatis.module.tables.service.impl;
 
-import com.ltj.mybatis.framework.util.FileManageUtils;
-import com.ltj.mybatis.module.Columns.mapper.ColumnsMapper;
-import com.ltj.mybatis.module.Columns.po.ColumnsExtend;
-import com.ltj.mybatis.module.Tables.mapper.TablesMapper;
-import com.ltj.mybatis.module.Tables.po.Tables;
-import com.ltj.mybatis.module.Tables.service.TablesService;
+import com.ltj.mybatis.common.utils.FileManageUtils;
+import com.ltj.mybatis.module.columns.mapper.ColumnsMapper;
+import com.ltj.mybatis.module.columns.po.ColumnsExtend;
+import com.ltj.mybatis.module.tables.mapper.TablesMapper;
+import com.ltj.mybatis.module.tables.po.Tables;
+import com.ltj.mybatis.module.tables.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,10 +140,6 @@ public class TablesServiceImpl implements TablesService {
 		String path = javaPath + StringUtils.replace(prefix,".","/");
 
 		try {
-			//创建myMapper
-			String myMapperPath = path+"/framework/util/";
-			String myMapperData = FileManageUtils.fillInTemplate("myMapper", map);
-			FileManageUtils.createFile(myMapperPath,"MyMapper.java",myMapperData);
 
 			//包路径
 			String packPath = path+"/module/"+ ptablename;
@@ -162,13 +158,22 @@ public class TablesServiceImpl implements TablesService {
 			//创建service.java文件
 			String servicePath = packPath +"/service/";
 			String serviceData = FileManageUtils.fillInTemplate("service", map);
-			FileManageUtils.createFile(servicePath,utablename+"Service.java",serviceData);
+			FileManageUtils.createFile(servicePath,"I"+utablename+"Service.java",serviceData);
 			//创建serviceImpl.java文件
 			String serviceImplPath = servicePath+"/impl/";
 			String serviceImplData = FileManageUtils.fillInTemplate("serviceImpl", map);
 			FileManageUtils.createFile(serviceImplPath,utablename+"ServiceImpl.java",serviceImplData);
 
 			if(extend == 1){
+				// 创建 result
+				String resultPath = path+"/common/entity/";
+				String resultData = FileManageUtils.fillInTemplate("result", map);
+				FileManageUtils.createFile(resultPath,"Result.java",resultData);
+
+				// 创建 basecontroller
+				String baseControllerPath = path+"/common/controller/";
+				String baseControllerData = FileManageUtils.fillInTemplate("baseController", map);
+				FileManageUtils.createFile(baseControllerPath,"BaseController.java",baseControllerData);
 				//创建controller
 				String controllerPath = path +"/controller/";
 				String controllerData = FileManageUtils.fillInTemplate("controller", map);

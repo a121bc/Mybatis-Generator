@@ -1,10 +1,10 @@
 package [[${prefix}]].module.[[${ptablename}]].mapper;
 
 import [[${prefix}]].module.[[${ptablename}]].po.[[${utablename}]];
-import [[${prefix}]].framework.util.MyMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface [[${utablename}]]Mapper extends MyMapper<[[${utablename}]]> {
+public interface [[${utablename}]]Mapper extends BaseMapper<[[${utablename}]]> {
 
 }

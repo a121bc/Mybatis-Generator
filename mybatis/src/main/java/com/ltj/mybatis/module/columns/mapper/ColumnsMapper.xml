@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ltj.mybatis.module.Columns.mapper.ColumnsMapper">
-    <resultMap id="BaseResultMap" type="com.ltj.mybatis.module.Columns.po.Columns" >
+<mapper namespace="com.ltj.mybatis.module.columns.mapper.ColumnsMapper">
+    <resultMap id="BaseResultMap" type="com.ltj.mybatis.module.columns.po.Columns" >
         <result column="TABLE_CATALOG" property="table_catalog" jdbcType="VARCHAR" />
         <result column="TABLE_SCHEMA" property="table_schema" jdbcType="VARCHAR" />
         <result column="TABLE_NAME" property="table_name" jdbcType="VARCHAR" />
@@ -24,7 +24,7 @@
         <result column="COLUMN_COMMENT" property="column_comment" jdbcType="VARCHAR" />
         <result column="GENERATION_EXPRESSION" property="generation_expression" jdbcType="VARCHAR" />
     </resultMap>
-    <resultMap id="ColumnsExtendMap" type="com.ltj.mybatis.module.Columns.po.ColumnsExtend" extends="BaseResultMap">
+    <resultMap id="ColumnsExtendMap" type="com.ltj.mybatis.module.columns.po.ColumnsExtend" extends="BaseResultMap">
         <result column="jdbcType" property="jdbcType" jdbcType="VARCHAR" />
         <result column="javaType" property="javaType" jdbcType="VARCHAR" />
     </resultMap>

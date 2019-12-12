@@ -2,14 +2,13 @@ package [[${prefix}]].module.[[${ptablename}]].po;
 
 import lombok.Data;
 import java.util.Date;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 
 @Data
 public class [[${utablename}]] {
 [#  th:each="col : ${columnsList}"][# th:if="${col.column_key} eq 'PRI'"]
-    @Id
-    @GeneratedValue(generator = "JDBC")
+    @TableId(type= IdType.AUTO)
     private [[${col.javaType}]] [[${col.column_name}]];
 [/][# th:unless="${col.column_key} eq 'PRI'"]
     /* [[${col.column_comment}]] */

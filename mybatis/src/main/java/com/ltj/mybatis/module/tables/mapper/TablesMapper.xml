@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ltj.mybatis.module.Tables.mapper.TablesMapper">
-    <resultMap id="BaseResultMap" type="com.ltj.mybatis.module.Tables.po.Tables" >
+<mapper namespace="com.ltj.mybatis.module.tables.mapper.TablesMapper">
+    <resultMap id="BaseResultMap" type="com.ltj.mybatis.module.tables.po.Tables" >
         <result column="TABLE_CATALOG" property="table_catalog" jdbcType="VARCHAR" />
         <result column="TABLE_SCHEMA" property="table_schema" jdbcType="VARCHAR" />
         <result column="TABLE_NAME" property="table_name" jdbcType="VARCHAR" />
@@ -29,7 +29,7 @@
     <select id="listTable" resultMap="BaseResultMap">
         select * from information_schema.TABLES where TABLE_SCHEMA=(select database())
     </select>
-    
+
     <select id="selectDataBaseName" resultType="java.lang.String">
         select database()
     </select>

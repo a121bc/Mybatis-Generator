@@ -1,6 +1,6 @@
-package com.ltj.mybatis.module.Tables.service;
+package com.ltj.mybatis.module.tables.service;
 
-import com.ltj.mybatis.module.Tables.po.Tables;
+import com.ltj.mybatis.module.tables.po.Tables;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ public interface TablesService {
     String selectDataBaseName();
 
     //创建实体
-    Boolean createBean(String tablename, String prefix,Integer extend);
+    Boolean createBean(String tablename, String prefix, Integer extend);
 }

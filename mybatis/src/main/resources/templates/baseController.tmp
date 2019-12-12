@@ -1,7 +1,7 @@
-package com.ltj.mybatis.common.controller;
+package [[${prefix}]].common.controller;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ltj.mybatis.common.entity.Result;
+import [[${prefix}]].common.entity.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,7 @@ public class BaseController<T, S extends IService<T>> {
 
     @GetMapping("/all")
     public Result findAll() {
-        return Result.success(baseService.listObjs());
+        return Result.success(baseService.list());
     }
 
 

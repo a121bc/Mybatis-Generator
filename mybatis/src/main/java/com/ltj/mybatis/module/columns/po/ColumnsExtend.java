@@ -1,4 +1,4 @@
-package com.ltj.mybatis.module.Columns.po;
+package com.ltj.mybatis.module.columns.po;
 
 import lombok.Data;
 

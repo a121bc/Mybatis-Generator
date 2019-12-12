@@ -1,17 +1,8 @@
 package [[${prefix}]].module.[[${ptablename}]].service;
 [# th:if="${extend} eq 1"]
+import com.baomidou.mybatisplus.extension.service.IService;
 import [[${prefix}]].module.[[${ptablename}]].po.[[${utablename}]];
-import java.util.Map;
 [/]
-public interface [[${utablename}]]Service {
-[# th:if="${extend} eq 1"]
-    //添加或修改
-	Map<String,Object> insertOrUpdate([[${utablename}]] [[${beanname}]]);
+public interface I[[${utablename}]]Service [# th:if="${extend} eq 1"]extends IService<[[${utablename}]]>[/]{
 
-	//根据主键删除
-	Map<String,Object> deleteByFid(Integer fid);
-
-	//查询所有记录
-	Map<String,Object> selectAll();
-[/]
 }

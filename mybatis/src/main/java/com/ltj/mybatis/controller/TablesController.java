@@ -1,6 +1,6 @@
 package com.ltj.mybatis.controller;
 
-import com.ltj.mybatis.module.Tables.service.TablesService;
+import com.ltj.mybatis.module.tables.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

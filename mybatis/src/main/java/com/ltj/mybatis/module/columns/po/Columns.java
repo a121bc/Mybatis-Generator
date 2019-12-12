@@ -1,9 +1,7 @@
-package com.ltj.mybatis.module.Columns.po;
+package com.ltj.mybatis.module.columns.po;
 
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.math.BigInteger;
 
 @Data

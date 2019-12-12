@@ -2,52 +2,12 @@ package [[${prefix}]].controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Autowired;
 import [[${prefix}]].module.[[${ptablename}]].po.[[${utablename}]];
-import [[${prefix}]].module.[[${ptablename}]].service.[[${utablename}]]Service;
-import java.util.Map;
+import [[${prefix}]].module.[[${ptablename}]].service.I[[${utablename}]]Service;
+import [[${prefix}]].common.controller.BaseController;
 
 @RestController
 @RequestMapping("/[[${ubeanname}]]")
-public class [[${ubeanname}]]Controller {
-
-	@Autowired
-	private [[${utablename}]]Service [[${beanname}]]Service;
-
-	/**
-	 * @Description 新增或修改
-	 * @param
-	 * @return java.util.Map<java.lang.String,java.lang.Object>
-	 * @author
-	 * @Date
-	 **/
-	@RequestMapping("/insertOrUpdate")
-	public Map<String,Object> insertOrUpdate([[${utablename}]] [[${beanname}]]){
-        return [[${beanname}]]Service.insertOrUpdate([[${beanname}]]);
-    }
-
-    /**
-     * @Description 根据主键删除
-     * @param fid
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @author
-     * @Date
-     **/
-	@RequestMapping("/deleteByFid")
-	public Map<String,Object> deleteByFid(Integer fid){
-        return [[${beanname}]]Service.deleteByFid(fid);
-    }
-
-    /**
-     * @Description 查询所有
-     * @param
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @author
-     * @Date
-     **/
-	@RequestMapping("/selectAll")
-	public Map<String,Object> selectAll(){
-        return [[${beanname}]]Service.selectAll();
-    }
+public class [[${ubeanname}]]Controller extends BaseController<[[${utablename}]], I[[${utablename}]]Service> {
 
 }

@@ -1,4 +1,4 @@
-package com.ltj.mybatis.framework.util;
+package com.ltj.mybatis.common.utils;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -74,26 +74,28 @@ public class FileManageUtils {
      * @Date 11:34 2019-5-30 0030
      **/
     public static String getJavaPath() {
-        String path = FileManageUtils.class.getClass().getResource("/").getPath();
+        String path = FileManageUtils.class.getResource("/").getPath();
         String getSrcPath = path.substring(1,path.indexOf("mybatis")+8)+"src/main/java/";
         return  getSrcPath;
     }
 
     //首字母转小写
     public static String toLowerCaseFirstOne(String s){
-        if(Character.isLowerCase(s.charAt(0)))
+        if(Character.isLowerCase(s.charAt(0))) {
             return s;
-        else
-            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+        } else {
+            return Character.toLowerCase(s.charAt(0)) + s.substring(1);
+        }
     }
 
 
     //首字母转大写
     public static String toUpperCaseFirstOne(String s){
-        if(Character.isUpperCase(s.charAt(0)))
+        if(Character.isUpperCase(s.charAt(0))) {
             return s;
-        else
-            return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
+        } else {
+            return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+        }
     }
 
     /**下划线转驼峰*/
