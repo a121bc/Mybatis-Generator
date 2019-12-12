@@ -34,7 +34,7 @@ public class FileManageUtils {
         Locale locale = Locale.getDefault();
         FileTemplateResolver templateResolver = new FileTemplateResolver();
         templateResolver.setTemplateMode(TemplateMode.TEXT);
-        templateResolver.setPrefix("mybatis/src/main/resources/templates/");
+        templateResolver.setPrefix("server/mybatis/src/main/resources/templates/");
         templateResolver.setSuffix(".tmp");
         templateResolver.setCacheTTLMs(3600000L);
         templateResolver.setCharacterEncoding("utf-8");

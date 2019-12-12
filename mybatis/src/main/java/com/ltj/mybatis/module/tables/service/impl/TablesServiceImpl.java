@@ -170,10 +170,21 @@ public class TablesServiceImpl implements TablesService {
 				String resultData = FileManageUtils.fillInTemplate("result", map);
 				FileManageUtils.createFile(resultPath,"Result.java",resultData);
 
+				// 创建 MybatisPlusConfig
+				String pageconfigPath = path+"/common/config/";
+				String pageconfigData = FileManageUtils.fillInTemplate("mybatisPlusConfig", map);
+				FileManageUtils.createFile(pageconfigPath,"MybatisPlusConfig.java",pageconfigData);
+
+				// 创建 GlobalExceptionController
+				String globalExceptionControllerPath = path+"/common/controller/";
+				String globalExceptionControllerData = FileManageUtils.fillInTemplate("globalExceptionController", map);
+				FileManageUtils.createFile(globalExceptionControllerPath,"GlobalExceptionController.java",globalExceptionControllerData);
+
 				// 创建 basecontroller
 				String baseControllerPath = path+"/common/controller/";
 				String baseControllerData = FileManageUtils.fillInTemplate("baseController", map);
 				FileManageUtils.createFile(baseControllerPath,"BaseController.java",baseControllerData);
+
 				//创建controller
 				String controllerPath = path +"/controller/";
 				String controllerData = FileManageUtils.fillInTemplate("controller", map);
