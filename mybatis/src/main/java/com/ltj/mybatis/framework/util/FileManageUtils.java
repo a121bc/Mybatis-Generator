@@ -74,7 +74,7 @@ public class FileManageUtils {
      * @Date 11:34 2019-5-30 0030
      **/
     public static String getJavaPath() {
-        String path = FileManageUtils.class.getClass().getResource("/").getPath();
+        String path = FileManageUtils.class.getResource("/").getPath();
         String getSrcPath = path.substring(1,path.indexOf("mybatis")+8)+"src/main/java/";
         return  getSrcPath;
     }
@@ -84,7 +84,7 @@ public class FileManageUtils {
         if(Character.isLowerCase(s.charAt(0)))
             return s;
         else
-            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+            return Character.toLowerCase(s.charAt(0)) + s.substring(1);
     }
 
 
