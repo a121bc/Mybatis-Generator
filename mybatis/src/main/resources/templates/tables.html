@@ -118,7 +118,12 @@
             layer.msg('请输入包名',function () {});
             return ;
         }
-        ajaxGen(pre,tablename,extend);
+        // ajaxGen(pre,tablename,extend);
+        postDownload('createBeans',{
+            tablenames:tablename,
+            prefix:pre,
+            extend:extend
+        })
     }
 
     //生成一组
@@ -134,7 +139,13 @@
             layer.msg('请输勾选复选框',function () {});
             return ;
         }
-        ajaxGen(pre,arr.join(","),extend);
+        // ajaxGen(pre,arr.join(","),extend);
+        postDownload('createBeans',{
+            tablenames:arr.join(","),
+            prefix:pre,
+            extend:extend
+        })
+
 
     }
 
@@ -174,6 +185,46 @@
             }
         });
     }
+
+    /**
+     * 下载文件
+     * @param url
+     * @param data
+     * @returns {Promise<void>}
+     */
+    async function postDownload(url, data) {
+        const request = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        }
+        data = data || {};
+        let paramsArray = [];
+        //拼接参数
+        Object.keys(data).forEach(key => paramsArray.push(key + '=' + data[key]));
+        if (url.search(/\?/) === -1) {
+            url += '?' + paramsArray.join('&')
+        } else {
+            url += '&' + paramsArray.join('&')
+        }
+
+        const response = await fetch(url, request)
+
+        debugger;
+        const filename = response.headers.get('content-disposition').split(';')[1].split('=')[1]
+        const blob = await response.blob()
+
+        const link = document.createElement('a')
+        link.download = decodeURIComponent(filename)
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        document.body.appendChild(link)
+        link.click()
+        URL.revokeObjectURL(link.href)
+        document.body.removeChild(link)
+    }
+
 
 </script>
 </body>

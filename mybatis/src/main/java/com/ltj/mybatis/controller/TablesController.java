@@ -1,17 +1,20 @@
 package com.ltj.mybatis.controller;
 
+import com.ltj.mybatis.common.utils.FileManageUtil;
 import com.ltj.mybatis.module.tables.service.TablesService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 @Controller
@@ -45,27 +48,32 @@ public class TablesController {
      **/
 	@PostMapping("/createBeans")
 	@ResponseBody
-	public Map<String,Object> createBeans(String tablenames,String prefix,Integer extend){
+	public ResponseEntity<byte[]> createBeans(String tablenames, String prefix, Integer extend){
 		if(Objects.isNull(extend)) {
 			extend = 0;
 		}
-		Map<String,Object> map = new HashMap<>();
-		boolean flag = true;
-		if(StringUtils.isEmpty(tablenames) || prefix.startsWith("com.ltj.mybatis")){
-			flag =false;
-		}else {
-			String[] tableArr = tablenames.split(",");
-			for (String ta: tableArr) {
-				if(flag){
-					flag = tablesService.createBean(ta,prefix,extend);
-				}
-			}
+		String filename = tablesService.createAllBean(tablenames, prefix, extend);
+		File file = new File(filename);
+		ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity.ok();
+		bodyBuilder.contentLength(file.length());
+		bodyBuilder.contentType(MediaType.APPLICATION_OCTET_STREAM);
+		// 文件名编码
+		// 直接下载
+		bodyBuilder.header("Content-Disposition","attachment;filename*="+filename.substring(filename.lastIndexOf(File.separator )+1));
+		// 下载成功返回二进制流
+		try {
+			ResponseEntity<byte[]> body = bodyBuilder.body(FileUtils.readFileToByteArray(file));
+			String substring = filename.substring(0, filename.lastIndexOf("src"));
+			FileManageUtil.deleteFolder(substring);
+			return body;
+		} catch (IOException e) {
+			e.printStackTrace();
+			// 下载失败直接返回错误的请求
+			return (ResponseEntity<byte[]>) ResponseEntity.badRequest();
+		} finally {
+
 		}
 
-		map.put("flag",flag);
-		map.put("message",flag?"创建成功":"创建失败");
-
-		return map;
 
 	}
 

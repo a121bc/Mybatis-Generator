@@ -1,6 +1,7 @@
 package com.ltj.mybatis.module.tables.service.impl;
 
-import com.ltj.mybatis.common.utils.FileManageUtils;
+import com.ltj.mybatis.common.utils.FileManageUtil;
+import com.ltj.mybatis.common.utils.ZipUtil;
 import com.ltj.mybatis.module.columns.mapper.ColumnsMapper;
 import com.ltj.mybatis.module.columns.po.ColumnsExtend;
 import com.ltj.mybatis.module.tables.mapper.TablesMapper;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,14 +84,12 @@ public class TablesServiceImpl implements TablesService {
 	/**
 	 * @Description 查询表数据并创建Bean
 	 * @param tablename
-	 * @param prefix
+	 * @param map
 	 * @return java.util.Map<java.lang.String,java.lang.Object>
 	 * @author 刘天珺
 	 * @Date 11:22 2019-5-31 0031
 	 **/
-	@Override
-	public Boolean createBean(String tablename, String prefix, Integer extend) {
-		Map<String,Object> map = new HashMap<>();
+	public Map<String, Object> createBean(String tablename, Map<String, Object> map) {
 		List<ColumnsExtend> columnsList = columnsMapper.listTableColumn(tablename);
 		String priCol = "Fid";
 		for (ColumnsExtend cole : columnsList) {
@@ -98,28 +99,95 @@ public class TablesServiceImpl implements TablesService {
 			cole.setJdbcType(jdbctype==null?"VARCHAR":jdbctype);
 			cole.setJavaType(javaType==null?"String":javaType);
 			if ("PRI".equals(cole.getColumn_key())) {
-				priCol = FileManageUtils.toUpperCaseFirstOne(cole.getColumn_name());
+				priCol = FileManageUtil.toUpperCaseFirstOne(cole.getColumn_name());
 			}
 
 		}
-		String tablehump = FileManageUtils.lineToHump(tablename);
-		String utablename = FileManageUtils.toUpperCaseFirstOne(tablehump);
-		String ptablename = FileManageUtils.HeadAndlineToHump(tablename);
+		String tablehump = FileManageUtil.lineToHump(tablename);
+		String utablename = FileManageUtil.toUpperCaseFirstOne(tablehump);
+		String ptablename = FileManageUtil.HeadAndlineToHump(tablename);
 		String beanbefor = tablename.substring(tablename.indexOf("_")+1);
-		String beanname = FileManageUtils.lineToHump(beanbefor);
-		String ubeanname = FileManageUtils.toUpperCaseFirstOne(beanname);
+		String beanname = FileManageUtil.lineToHump(beanbefor);
+		String ubeanname = FileManageUtil.toUpperCaseFirstOne(beanname);
 
 		map.put("tablename",tablename);
 		map.put("utablename",utablename);
 		map.put("ptablename",ptablename);
 		map.put("beanname",beanname);
 		map.put("ubeanname",ubeanname);
-		map.put("prefix",prefix);
-		map.put("extend",extend);
+
 		map.put("columnsList",columnsList);
 		map.put("priCol",priCol);
 		//创建文件
-		return createAll(map);
+		return map;
+	}
+
+	/**
+	 * @Description 根据表名集合创建数据
+	 * @param tablenames
+	 * @param prefix
+	 * @param extend
+	 * @return java.lang.Boolean
+	 * @author Liu Tian Jun
+	 * @date 13:25 2020-03-04 0004
+	 **/
+	@Override
+	public String createAllBean(String tablenames, String prefix, Integer extend) {
+		Map<String,Object> map = new HashMap<>();
+		String javaPath = FileManageUtil.getJavaPath();
+		String path = javaPath + StringUtils.replace(prefix,".","/");
+		map.put("prefix",prefix);
+		map.put("extend",extend);
+		map.put("path", path);
+		String[] tableArr = tablenames.split(",");
+
+		try {
+			for (String ta: tableArr) {
+				// 生成数据
+				createBean(ta, map);
+				// 生成文件
+				createAll(map);
+			}
+
+			if (extend == 1) {
+				createExtend(path,map);
+			}
+			return ZipUtil.zipFile(javaPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	/**
+	 * @Description 创建补充包
+	 * @param path
+	 * @param map
+	 * @return boolean
+	 * @author Liu Tian Jun
+	 * @date 13:32 2020-03-04 0004
+	 **/
+	public void createExtend(String path, Map<String, Object> map) throws IOException {
+		// 创建 result
+		String resultPath = path+"/common/entity/";
+		String resultData = FileManageUtil.fillInTemplate("result", map);
+		FileManageUtil.createFile(resultPath,"Result.java",resultData);
+
+		// 创建 MybatisPlusConfig
+		String pageconfigPath = path+"/common/config/";
+		String pageconfigData = FileManageUtil.fillInTemplate("mybatisPlusConfig", map);
+		FileManageUtil.createFile(pageconfigPath,"MybatisPlusConfig.java",pageconfigData);
+
+		// 创建 GlobalExceptionController
+		String globalExceptionControllerPath = path+"/common/controller/";
+		String globalExceptionControllerData = FileManageUtil.fillInTemplate("globalExceptionController", map);
+		FileManageUtil.createFile(globalExceptionControllerPath,"GlobalExceptionController.java",globalExceptionControllerData);
+
+		// 创建 basecontroller
+		String baseControllerPath = path+"/common/controller/";
+		String baseControllerData = FileManageUtil.fillInTemplate("baseController", map);
+		FileManageUtil.createFile(baseControllerPath,"BaseController.java",baseControllerData);
 	}
 
 	/**
@@ -129,73 +197,42 @@ public class TablesServiceImpl implements TablesService {
 	 * @author 刘天珺
 	 * @Date 09:25 2019-5-31 0031
 	 **/
-	public boolean createAll(Map map) {
+	public void createAll(Map map) throws IOException {
 		Integer extend = (Integer) map.get("extend");
-
-		String javaPath = FileManageUtils.getJavaPath();
 		String utablename = (String) map.get("utablename");
 		String ptablename = (String) map.get("ptablename");
 		String ubeanname = (String) map.get("ubeanname");
-		String prefix = (String) map.get("prefix");
-		String path = javaPath + StringUtils.replace(prefix,".","/");
+		String path = (String) map.get("path");
 
-		try {
+		//包路径
+		String packPath = path+"/module/"+ ptablename;
 
-			//包路径
-			String packPath = path+"/module/"+ ptablename;
+		//创建实体
+		String poPath = packPath +"/po/";
+		String pojoData = FileManageUtil.fillInTemplate("pojo", map);
+		FileManageUtil.createFile(poPath,utablename+".java",pojoData);
+		//创建mapper.java文件
+		String mapperpath = packPath +"/mapper/";
+		String mapperJavaData = FileManageUtil.fillInTemplate("mapperJava", map);
+		FileManageUtil.createFile(mapperpath,utablename+"Mapper.java",mapperJavaData);
+		//创建mapper.xml文件
+		String mapperXmlData = FileManageUtil.fillInTemplate("mypperXml", map);
+		FileManageUtil.createFile(mapperpath,utablename+"Mapper.xml",mapperXmlData);
+		//创建service.java文件
+		String servicePath = packPath +"/service/";
+		String serviceData = FileManageUtil.fillInTemplate("service", map);
+		FileManageUtil.createFile(servicePath,"I"+utablename+"Service.java",serviceData);
+		//创建serviceImpl.java文件
+		String serviceImplPath = servicePath+"/impl/";
+		String serviceImplData = FileManageUtil.fillInTemplate("serviceImpl", map);
+		FileManageUtil.createFile(serviceImplPath,utablename+"ServiceImpl.java",serviceImplData);
 
-			//创建实体
-			String poPath = packPath +"/po/";
-			String pojoData = FileManageUtils.fillInTemplate("pojo", map);
-			FileManageUtils.createFile(poPath,utablename+".java",pojoData);
-			//创建mapper.java文件
-			String mapperpath = packPath +"/mapper/";
-			String mapperJavaData = FileManageUtils.fillInTemplate("mapperJava", map);
-			FileManageUtils.createFile(mapperpath,utablename+"Mapper.java",mapperJavaData);
-			//创建mapper.xml文件
-			String mapperXmlData = FileManageUtils.fillInTemplate("mypperXml", map);
-			FileManageUtils.createFile(mapperpath,utablename+"Mapper.xml",mapperXmlData);
-			//创建service.java文件
-			String servicePath = packPath +"/service/";
-			String serviceData = FileManageUtils.fillInTemplate("service", map);
-			FileManageUtils.createFile(servicePath,"I"+utablename+"Service.java",serviceData);
-			//创建serviceImpl.java文件
-			String serviceImplPath = servicePath+"/impl/";
-			String serviceImplData = FileManageUtils.fillInTemplate("serviceImpl", map);
-			FileManageUtils.createFile(serviceImplPath,utablename+"ServiceImpl.java",serviceImplData);
-
-			if(extend == 1){
-				// 创建 result
-				String resultPath = path+"/common/entity/";
-				String resultData = FileManageUtils.fillInTemplate("result", map);
-				FileManageUtils.createFile(resultPath,"Result.java",resultData);
-
-				// 创建 MybatisPlusConfig
-				String pageconfigPath = path+"/common/config/";
-				String pageconfigData = FileManageUtils.fillInTemplate("mybatisPlusConfig", map);
-				FileManageUtils.createFile(pageconfigPath,"MybatisPlusConfig.java",pageconfigData);
-
-				// 创建 GlobalExceptionController
-				String globalExceptionControllerPath = path+"/common/controller/";
-				String globalExceptionControllerData = FileManageUtils.fillInTemplate("globalExceptionController", map);
-				FileManageUtils.createFile(globalExceptionControllerPath,"GlobalExceptionController.java",globalExceptionControllerData);
-
-				// 创建 basecontroller
-				String baseControllerPath = path+"/common/controller/";
-				String baseControllerData = FileManageUtils.fillInTemplate("baseController", map);
-				FileManageUtils.createFile(baseControllerPath,"BaseController.java",baseControllerData);
-
-				//创建controller
-				String controllerPath = path +"/controller/";
-				String controllerData = FileManageUtils.fillInTemplate("controller", map);
-				FileManageUtils.createFile(controllerPath,ubeanname+"Controller.java",controllerData);
-			}
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		if(extend == 1) {
+			//创建controller
+			String controllerPath = path + "/controller/";
+			String controllerData = FileManageUtil.fillInTemplate("controller", map);
+			FileManageUtil.createFile(controllerPath, ubeanname + "Controller.java", controllerData);
 		}
-
 
 	}
 

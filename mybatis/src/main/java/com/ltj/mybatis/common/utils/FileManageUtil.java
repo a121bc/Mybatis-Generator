@@ -1,5 +1,7 @@
 package com.ltj.mybatis.common.utils;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -7,9 +9,8 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
  * 创 建 人 刘天珺
  * 创建时间 2019-5-30 0030 10:30
  */
-public class FileManageUtils {
+public class FileManageUtil {
 
     /**
      * @Description 用数据填充模板
@@ -66,6 +67,36 @@ public class FileManageUtils {
         return true;
     }
 
+    // 删除文件夹
+    public static void deleteFolder(String Foleder) throws IOException {
+        Path start = Paths.get(Foleder);
+        if (Files.notExists(start)) {
+            System.out.println("文件夹不存在！");
+        }
+
+        Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
+            @Override //构成了一个内部类
+            // 处理文件
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            // 再处理目录
+            public FileVisitResult postVisitDirectory(Path dir, IOException e)
+                    throws IOException {
+                if (e == null) {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                } else {
+                    throw e;
+                }
+            }
+        });
+        System.out.println("删除成功！");
+    }
+
     /**
      * @Description 获取java目录
      * @param
@@ -74,8 +105,9 @@ public class FileManageUtils {
      * @Date 11:34 2019-5-30 0030
      **/
     public static String getJavaPath() {
-        String path = FileManageUtils.class.getResource("/").getPath();
-        String getSrcPath = path.substring(1,path.indexOf("mybatis")+8)+"src/main/java/";
+        String path = FileManageUtil.class.getResource("/").getPath();
+//        String getSrcPath = path.substring(1,path.indexOf("mybatis")+8)+"src/main/java/";
+        String getSrcPath = path.substring(1,path.indexOf("target")+7)+ RandomStringUtils.randomAlphanumeric(10)+"/src/main/java/";
         return  getSrcPath;
     }
 
