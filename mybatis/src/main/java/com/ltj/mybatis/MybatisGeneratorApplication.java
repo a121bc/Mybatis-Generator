@@ -1,7 +1,6 @@
 package com.ltj.mybatis;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -10,8 +9,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.io.IOException;
 import java.net.InetAddress;
 
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class,scanBasePackages = {"com.ltj"})
-@MapperScan(basePackages = "com.ltj.mybatis.module.*.mapper")
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class},scanBasePackages = {"com.ltj"})
 @Slf4j
 public class MybatisGeneratorApplication {
 
