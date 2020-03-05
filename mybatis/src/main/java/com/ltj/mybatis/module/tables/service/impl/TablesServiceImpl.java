@@ -1,6 +1,7 @@
 package com.ltj.mybatis.module.tables.service.impl;
 
 import com.ltj.mybatis.common.utils.FileManageUtil;
+import com.ltj.mybatis.common.utils.StringUtil;
 import com.ltj.mybatis.common.utils.ZipUtil;
 import com.ltj.mybatis.module.columns.mapper.ColumnsMapper;
 import com.ltj.mybatis.module.columns.po.ColumnsExtend;
@@ -27,6 +28,9 @@ public class TablesServiceImpl implements TablesService {
 	private TablesMapper tablesMapper;
 	@Autowired
 	private ColumnsMapper columnsMapper;
+
+	@Autowired
+	private FileManageUtil fileManageUtil;
 
 	private static Map<String,String> javaTypeMap;
 
@@ -99,16 +103,16 @@ public class TablesServiceImpl implements TablesService {
 			cole.setJdbcType(jdbctype==null?"VARCHAR":jdbctype);
 			cole.setJavaType(javaType==null?"String":javaType);
 			if ("PRI".equals(cole.getColumn_key())) {
-				priCol = FileManageUtil.toUpperCaseFirstOne(cole.getColumn_name());
+				priCol = StringUtil.toUpperCaseFirstOne(cole.getColumn_name());
 			}
 
 		}
-		String tablehump = FileManageUtil.lineToHump(tablename);
-		String utablename = FileManageUtil.toUpperCaseFirstOne(tablehump);
-		String ptablename = FileManageUtil.HeadAndlineToHump(tablename);
+		String tablehump = StringUtil.lineToHump(tablename);
+		String utablename = StringUtil.toUpperCaseFirstOne(tablehump);
+		String ptablename = StringUtil.HeadAndlineToHump(tablename);
 		String beanbefor = tablename.substring(tablename.indexOf("_")+1);
-		String beanname = FileManageUtil.lineToHump(beanbefor);
-		String ubeanname = FileManageUtil.toUpperCaseFirstOne(beanname);
+		String beanname = StringUtil.lineToHump(beanbefor);
+		String ubeanname = StringUtil.toUpperCaseFirstOne(beanname);
 
 		map.put("tablename",tablename);
 		map.put("utablename",utablename);
@@ -171,22 +175,22 @@ public class TablesServiceImpl implements TablesService {
 	public void createExtend(String path, Map<String, Object> map) throws IOException {
 		// 创建 result
 		String resultPath = path+"/common/entity/";
-		String resultData = FileManageUtil.fillInTemplate("result", map);
+		String resultData = fileManageUtil.fillInTemplate("result", map);
 		FileManageUtil.createFile(resultPath,"Result.java",resultData);
 
 		// 创建 MybatisPlusConfig
 		String pageconfigPath = path+"/common/config/";
-		String pageconfigData = FileManageUtil.fillInTemplate("mybatisPlusConfig", map);
+		String pageconfigData = fileManageUtil.fillInTemplate("mybatisPlusConfig", map);
 		FileManageUtil.createFile(pageconfigPath,"MybatisPlusConfig.java",pageconfigData);
 
 		// 创建 GlobalExceptionController
 		String globalExceptionControllerPath = path+"/common/controller/";
-		String globalExceptionControllerData = FileManageUtil.fillInTemplate("globalExceptionController", map);
+		String globalExceptionControllerData = fileManageUtil.fillInTemplate("globalExceptionController", map);
 		FileManageUtil.createFile(globalExceptionControllerPath,"GlobalExceptionController.java",globalExceptionControllerData);
 
 		// 创建 basecontroller
 		String baseControllerPath = path+"/common/controller/";
-		String baseControllerData = FileManageUtil.fillInTemplate("baseController", map);
+		String baseControllerData = fileManageUtil.fillInTemplate("baseController", map);
 		FileManageUtil.createFile(baseControllerPath,"BaseController.java",baseControllerData);
 	}
 
@@ -209,28 +213,28 @@ public class TablesServiceImpl implements TablesService {
 
 		//创建实体
 		String poPath = packPath +"/po/";
-		String pojoData = FileManageUtil.fillInTemplate("pojo", map);
+		String pojoData = fileManageUtil.fillInTemplate("pojo", map);
 		FileManageUtil.createFile(poPath,utablename+".java",pojoData);
 		//创建mapper.java文件
 		String mapperpath = packPath +"/mapper/";
-		String mapperJavaData = FileManageUtil.fillInTemplate("mapperJava", map);
+		String mapperJavaData = fileManageUtil.fillInTemplate("mapperJava", map);
 		FileManageUtil.createFile(mapperpath,utablename+"Mapper.java",mapperJavaData);
 		//创建mapper.xml文件
-		String mapperXmlData = FileManageUtil.fillInTemplate("mypperXml", map);
+		String mapperXmlData = fileManageUtil.fillInTemplate("mypperXml", map);
 		FileManageUtil.createFile(mapperpath,utablename+"Mapper.xml",mapperXmlData);
 		//创建service.java文件
 		String servicePath = packPath +"/service/";
-		String serviceData = FileManageUtil.fillInTemplate("service", map);
+		String serviceData = fileManageUtil.fillInTemplate("service", map);
 		FileManageUtil.createFile(servicePath,"I"+utablename+"Service.java",serviceData);
 		//创建serviceImpl.java文件
 		String serviceImplPath = servicePath+"/impl/";
-		String serviceImplData = FileManageUtil.fillInTemplate("serviceImpl", map);
+		String serviceImplData = fileManageUtil.fillInTemplate("serviceImpl", map);
 		FileManageUtil.createFile(serviceImplPath,utablename+"ServiceImpl.java",serviceImplData);
 
 		if(extend == 1) {
 			//创建controller
 			String controllerPath = path + "/controller/";
-			String controllerData = FileManageUtil.fillInTemplate("controller", map);
+			String controllerData = fileManageUtil.fillInTemplate("controller", map);
 			FileManageUtil.createFile(controllerPath, ubeanname + "Controller.java", controllerData);
 		}
 

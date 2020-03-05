@@ -70,8 +70,6 @@ public class TablesController {
 			e.printStackTrace();
 			// 下载失败直接返回错误的请求
 			return (ResponseEntity<byte[]>) ResponseEntity.badRequest();
-		} finally {
-
 		}
 
 

@@ -113,6 +113,7 @@
                     <include>**/*.png</include>
                     <include>**/*.gif</include>
                     <include>**/*.woff*</include>
+                    <include>**/*.tmp</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>

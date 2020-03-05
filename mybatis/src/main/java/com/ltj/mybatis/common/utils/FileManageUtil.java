@@ -1,11 +1,14 @@
 package com.ltj.mybatis.common.utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,15 +16,48 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 描 述 根据模板生成文件
  * 创 建 人 刘天珺
  * 创建时间 2019-5-30 0030 10:30
  */
+
+@Configuration
+@Component
 public class FileManageUtil {
+
+    private ApplicationContext applicationContext;
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+
+    @Bean
+    public SpringResourceTemplateResolver springTemplateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(applicationContext);
+        templateResolver.setTemplateMode(TemplateMode.LEGACYHTML5);
+        templateResolver.setPrefix("classpath:templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setCacheTTLMs(3600000L);
+        templateResolver.setCharacterEncoding("utf-8");
+        return templateResolver;
+    }
+
+    @Bean
+    public SpringResourceTemplateResolver fileTemplateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(applicationContext);
+        templateResolver.setTemplateMode(TemplateMode.TEXT);
+        templateResolver.setPrefix("classpath:templates/");
+        templateResolver.setSuffix(".tmp");
+        templateResolver.setCacheTTLMs(3600000L);
+        templateResolver.setCharacterEncoding("utf-8");
+        return templateResolver;
+    }
+
 
     /**
      * @Description 用数据填充模板
@@ -31,16 +67,12 @@ public class FileManageUtil {
      * @author 刘天珺
      * @Date 11:10 2019-5-30 0030
      **/
-    public static String fillInTemplate(String template,Map map) {
+    public String fillInTemplate(String template,Map map) {
         Locale locale = Locale.getDefault();
-        FileTemplateResolver templateResolver = new FileTemplateResolver();
-        templateResolver.setTemplateMode(TemplateMode.TEXT);
-        templateResolver.setPrefix("mybatis/src/main/resources/templates/");
-        templateResolver.setSuffix(".tmp");
-        templateResolver.setCacheTTLMs(3600000L);
-        templateResolver.setCharacterEncoding("utf-8");
+//        FileTemplateResolver templateResolver = new FileTemplateResolver();
+
         TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
+        templateEngine.setTemplateResolver(fileTemplateResolver());
         String data = templateEngine.process(template, new Context(locale,map));
         return data ;
     }
@@ -107,50 +139,11 @@ public class FileManageUtil {
     public static String getJavaPath() {
         String path = FileManageUtil.class.getResource("/").getPath();
 //        String getSrcPath = path.substring(1,path.indexOf("mybatis")+8)+"src/main/java/";
-        String getSrcPath = path.substring(1,path.indexOf("target")+7)+ RandomStringUtils.randomAlphanumeric(10)+"/src/main/java/";
+        String getSrcPath = path+ RandomStringUtils.randomAlphanumeric(10)+"/src/main/java/";
         return  getSrcPath;
     }
 
-    //首字母转小写
-    public static String toLowerCaseFirstOne(String s){
-        if(Character.isLowerCase(s.charAt(0))) {
-            return s;
-        } else {
-            return Character.toLowerCase(s.charAt(0)) + s.substring(1);
-        }
-    }
 
-
-    //首字母转大写
-    public static String toUpperCaseFirstOne(String s){
-        if(Character.isUpperCase(s.charAt(0))) {
-            return s;
-        } else {
-            return Character.toUpperCase(s.charAt(0)) + s.substring(1);
-        }
-    }
-
-    /**下划线转驼峰*/
-    public static String lineToHump(String str){
-        Matcher matcher = Pattern.compile("_(\\w)").matcher(str.toLowerCase());
-        StringBuffer sb = new StringBuffer();
-        while(matcher.find()){
-            matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
-    }
-
-    // 前缀大写和下划线转驼峰
-    public static String HeadAndlineToHump(String str){
-        Matcher matcher = Pattern.compile("_(\\w)|^([A-Za-z]+)").matcher(str.toLowerCase());
-        StringBuffer sb = new StringBuffer();
-        while(matcher.find()){
-            matcher.appendReplacement(sb, matcher.group(0).toUpperCase());
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
-    }
 
 
 }
