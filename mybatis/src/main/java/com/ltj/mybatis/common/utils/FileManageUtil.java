@@ -137,9 +137,9 @@ public class FileManageUtil {
      * @Date 11:34 2019-5-30 0030
      **/
     public static String getJavaPath() {
-        String path = FileManageUtil.class.getResource("/").getPath();
+//        String path = FileManageUtil.class.getResource("/").getPath();
 //        String getSrcPath = path.substring(1,path.indexOf("mybatis")+8)+"src/main/java/";
-        String getSrcPath = path+ RandomStringUtils.randomAlphanumeric(10)+"/src/main/java/";
+        String getSrcPath = RandomStringUtils.randomAlphanumeric(10)+"/src/main/java/";
         return  getSrcPath;
     }
 
