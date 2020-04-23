@@ -1,0 +1,44 @@
+server: #服务器端口
+  port: 8010
+
+spring:
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
+      hikari:  # 全局hikariCP参数，所有值和默认保持一致。(现已支持的参数如下,不清楚含义不要乱设置)
+        leak-detection-threshold:
+        max-lifetime: 1800000
+        connection-timeout: 30000
+        max-pool-size: 4
+        min-idle: 2
+        pool-name: DatebookHikariCP
+        data-source-properties: #以下属性仅为演示（默认不会引入）
+          serverTimezone: Asia/Shanghai
+          characterEncoding: utf-8
+          useUnicode: true
+          useSSL: false
+          autoReconnect: true
+      datasource:
+        master:
+          url: jdbc:mysql://192.168.1.98:3306/luck_cloud
+          username: root
+          password: root
+          driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  thymeleaf:
+    cache: false #关闭thymeleaf缓存 开发时使用 否则没有实时画面
+    check-template-location: true # 检查模板是否存在，然后再呈现
+    servlet:
+      content-type: text/html
+    enabled: true #启用MVC Thymeleaf视图分辨率
+    mode: LEGACYHTML5 #模板编码
+    prefix: classpath:templates/ # 在构建URL时预先查看名称的前缀
+    suffix: .html # 构建URL时附加查看名称的后缀.
+
+mybatis-plus: #下划线转驼峰关闭
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

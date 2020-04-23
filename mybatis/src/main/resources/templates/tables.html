@@ -19,7 +19,48 @@
 
 </head>
 <body>
+
 <div class="container col-md-10" th:unless="${#lists.isEmpty(tableList)}">
+    <div class="row">
+        <div class="col">
+            <form class="form-inline" role="form" method="get" action="/Tables/">
+                <div class="form-group">
+                    <label for="pollName" class="control-label" style="font-size: xx-large;">
+                        数据源:
+                    </label>&nbsp;&nbsp;
+                    <select class="form-control" name="ds" style="width: 200px">
+                        <option th:each="da : ${dataSources}" th:text="${da}" th:value="${da}" th:selected="${da eq ds}" ></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success" >查询</button>
+            </form>
+        </div>
+
+        <div class="col">
+            <form class="form-inline" role="form" method="post" action="/Data/add">
+                <div class="form-group">
+                    <label for="pollName" class="control-label">连接池名称: </label>
+                    <input style="margin-left: 5px" type="text" class="form-control" id="pollName"  name="pollName" placeholder="例如:test">
+                </div>
+                <div class="form-group">
+                    <label for="pollName" class="control-label" style="margin-left: 10px">url地址: </label>
+                    <input style="margin-left: 5px" type="text" class="form-control" id="url"  name="url" placeholder="例如:jdbc:mysql://xx.xx.xx.xx:3306/dynamic">
+                </div>
+                <div class="form-group" style="margin-top: 10px">
+                    <label for="pollName" class="control-label">用<span style="visibility: hidden">是</span>户<span style="visibility: hidden">是</span>名: </label>
+                    <input style="margin-left: 5px" type="text" class="form-control" id="username"  name="username" placeholder="例如:root">
+                </div>
+                <div class="form-group" style="margin-top: 10px">
+                    <label for="pollName" class="control-label" style="margin-left: 10px">密<span style="visibility: hidden">的</span>码: </label>
+                    <input style="margin-left: 5px" type="text" class="form-control" id="password"  name="password" placeholder="例如:123456">
+                </div>
+
+                <div class="form-group" style="margin-top: 10px;margin-left: 10px">
+                    <button type="submit" class="btn btn-success" >添加数据源</button>
+                </div>&nbsp;&nbsp;
+            </form>
+        </div>
+    </div>
     <h2 th:text="|数据库名:${dataBaseName}|"></h2>
     <form class="form-inline" role="form">
         <div class="form-group">
@@ -122,7 +163,8 @@
         postDownload('createBeans',{
             tablenames:tablename,
             prefix:pre,
-            extend:extend
+            extend:extend,
+            ds: '[[${ds}]]'
         })
     }
 
@@ -143,7 +185,8 @@
         postDownload('createBeans',{
             tablenames:arr.join(","),
             prefix:pre,
-            extend:extend
+            extend:extend,
+            ds: '[[${ds}]]'
         })
 
 

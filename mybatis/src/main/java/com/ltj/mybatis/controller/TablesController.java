@@ -1,7 +1,10 @@
 package com.ltj.mybatis.controller;
 
+import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.ltj.mybatis.common.utils.FileManageUtil;
 import com.ltj.mybatis.module.tables.service.TablesService;
+import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,16 +16,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
 @Controller
 @RequestMapping("/Tables")
+@AllArgsConstructor
 public class TablesController {
 
     @Autowired
     private TablesService tablesService;
+
+    private final DataSource dataSource;
 
     /**
      * @Description 查询所有表
@@ -32,9 +39,12 @@ public class TablesController {
      * @Date 11:05 2019-5-29 0029
      **/
     @GetMapping("/")
-    public String listTable(Model model){
+    @DS("#ds")
+    public String listTable(Model model,String ds){
         model.addAttribute("dataBaseName",tablesService.selectDataBaseName());
         model.addAttribute("tableList",tablesService.listTable());
+        model.addAttribute("dataSources",((DynamicRoutingDataSource) dataSource).getCurrentDataSources().keySet());
+        model.addAttribute("ds",ds);
         return "tables";
     }
 
@@ -48,7 +58,8 @@ public class TablesController {
      **/
     @PostMapping("/createBeans")
     @ResponseBody
-    public ResponseEntity<byte[]> createBeans(String tablenames, String prefix, Integer extend){
+    @DS("#ds")
+    public ResponseEntity<byte[]> createBeans(String tablenames, String prefix, Integer extend,String ds){
         if(Objects.isNull(extend)) {
             extend = 0;
         }
